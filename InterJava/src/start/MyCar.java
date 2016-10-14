@@ -53,6 +53,7 @@ public class MyCar {
 			return false;
 		} else {
 			System.out.println("Traveliiing!");
+			currentFuel-= tripDistance / 100 * fuelConsumption;
 			mileage += mileage + tripDistance;
 			lastTripDistance = tripDistance;
 			return true;
@@ -102,10 +103,19 @@ public class MyCar {
 		System.out.println("EXPECTED: tank capacity: 70\n fuel consumption: 15\n maker: BWM\n mileage: 0.0\n current fuel: 0\n last trip distance: 0.0\n");
 		System.out.println("ACTUAL:" + bmw);
 		separator();
-		System.out.println("Driving our car ");
+		System.out.println("Tanking our car by 30l");
 		bmw.tankIt(30);
 		System.out.println("EXPECTED: tank capacity: 70\n fuel consumption: 15\n maker: BWM\n mileage: 0.0\n current fuel: 30\n last trip distance: 0.0\n");
 		System.out.println("ACTUAL:" + bmw);
+		separator();
+		System.out.println("Driving our car 100km");
+		bmw.startTrip(100);
+		System.out.println("EXPECTED: tank capacity: 70\n fuel consumption: 15\n maker: BWM\n mileage: 100.0\n current fuel: 15\n last trip distance: 100.0\n");
+		System.out.println("ACTUAL:" + bmw);
+		separator();
+		System.out.println("Trying to drive out car 150km more..");
+		bmw.startTrip(150);
+		System.out.println("EXPECTED: Cannot reach destination");
 		separator();
 	}
 
