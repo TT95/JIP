@@ -23,6 +23,7 @@ public class MyCar {
 	private int currentFuel;
 	private double lastTripDistance;
 
+
 	public MyCar(String input) {
 		String[] arguments = input.split(";");
 		int tankCapacityInput = Integer.parseInt(arguments[0]);
