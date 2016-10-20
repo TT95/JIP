@@ -1,20 +1,17 @@
 package start;
 
-import com.sun.xml.internal.bind.v2.runtime.RuntimeUtil.ToStringAdapter;
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader;
-
-import java.util.Arrays;
 
 public class MyCar {
 	
-	private final int TANKMAX = 80;
-	private final int TANKMIN = 20;
-	private final int TANKCONSMIN = 3;
-	private final int TANKCONSMAX = 20;
-	private final int TANKDEF = 40;
-	private final int TANKCONDEF = 5;
-	private final int CURRFUELDEF = 0;
-	private final double MILEAGEDEF = 0.0;
+	private static final int TANKMAX = 80;
+	private static final int TANKMIN = 20;
+	private static final int TANKCONSMIN = 3;
+	private static final int TANKCONSMAX = 20;
+	private static final int TANKDEF = 40;
+	private static final int TANKCONDEF = 5;
+	private static final int CURRFUELDEF = 0;
+	private static final double MILEAGEDEF = 0.0;
+	private static final double LASTTRIPDEF = 0.0;
 	
 	private int tankCapacity;
 	private int fuelConsumption;
@@ -26,6 +23,16 @@ public class MyCar {
 
 	public MyCar(String input) {
 		String[] arguments = input.split(";");
+		//wrong input
+		if(arguments.length < 3) {
+			tankCapacity = TANKDEF;
+			fuelConsumption = TANKCONDEF;
+			maker = CarMakers.NOTKNOWN;
+			mileage = MILEAGEDEF;
+			currentFuel = CURRFUELDEF;
+			lastTripDistance = LASTTRIPDEF;
+			return;
+		}
 		int tankCapacityInput = Integer.parseInt(arguments[0]);
 		int fuelConsumptionInput = Integer.parseInt(arguments[1]);
 		String makerInput = arguments[2];
@@ -33,27 +40,25 @@ public class MyCar {
 		fuelConsumption = TANKCONSMIN < fuelConsumptionInput && fuelConsumptionInput < TANKCONSMAX ? 
 				fuelConsumptionInput : TANKCONDEF;
 		maker=CarMakers.toValue(makerInput);
-		mileage = 0.0;
-		currentFuel = 0;
-		lastTripDistance = 0.0;
+		mileage = MILEAGEDEF;
+		currentFuel = CURRFUELDEF;
+		lastTripDistance = LASTTRIPDEF;
 		
 	}
 	
-	public void tankIt(double howMuch) {
+	public boolean tankIt(double howMuch) {
 		if(howMuch > tankCapacity) {
-			System.out.println("Tank capacity exceeded!");
+			return false;
 		} else {
-			System.out.println("OK");
 			currentFuel+=howMuch;
+			return false;
 		}
 	}
 	
 	public boolean startTrip(double tripDistance){
 		if( tripDistance > currentFuel*100/fuelConsumption) {
-			System.out.println("Cannot reach destination!");
 			return false;
 		} else {
-			System.out.println("Traveliiing!");
 			currentFuel-= tripDistance / 100 * fuelConsumption;
 			mileage += mileage + tripDistance;
 			lastTripDistance = tripDistance;
@@ -77,6 +82,22 @@ public class MyCar {
 		return maker.toString();
 	}
 	
+	public int getTankCapacity() {
+		return tankCapacity;
+	}
+
+	public int getFuelConsumption() {
+		return fuelConsumption;
+	}
+
+	public int getCurrentFuel() {
+		return currentFuel;
+	}
+
+	public double getLastTripDistance() {
+		return lastTripDistance;
+	}
+
 	@Override
 	public String toString() {
 		return "tank capacity: " + tankCapacity + System.lineSeparator()
@@ -91,33 +112,32 @@ public class MyCar {
 
 		System.out.println("Creating a test car with following string (tankCapacity;fuelConsumption;maker): 30;6;Ford");
 		MyCar car1 = new MyCar("30;6;Ford");
-		System.out.println("EXPECTED: tank capacity: 30\n fuel consumption: 6\n maker: Ford\n mileage: 0.0\n current fuel: 0\n last trip distance: 0.0\n");
-		System.out.println("ACTUAL:" + car1);
+		testLine("tank capacity", 30, car1.getTankCapacity());
+		testLine("fuel consumption", 6, car1.getFuelConsumption());
+		testLine("maker", "Ford", car1.getMaker());
 		separator();
-		System.out.println("Creating a test car with following string (tankCapacity;fuelConsumption;maker): 100;-1;Daniel");
-		MyCar car2 = new MyCar("100;-1;Daniel");
-		System.out.println("EXPECTED: tank capacity: 40\n fuel consumption: 5\n maker: Notknown\n mileage: 0.0\n current fuel: 0\n last trip distance: 0.0\n");
-		System.out.println("ACTUAL:" + car2);
-		separator();
-		System.out.println("Creating our cool BMW car for further testing with following string (tankCapacity;fuelConsumption;maker): 70;15;BMW");
+		System.out.println("Creating car with arguments: 70;15;BMW" );
 		MyCar bmw = new MyCar("70;15;BMW");
-		System.out.println("EXPECTED: tank capacity: 70\n fuel consumption: 15\n maker: BWM\n mileage: 0.0\n current fuel: 0\n last trip distance: 0.0\n");
-		System.out.println("ACTUAL:" + bmw);
+		testLine("maker", "BMW", bmw.getMaker());
 		separator();
 		System.out.println("Tanking our car by 30l");
 		bmw.tankIt(30);
-		System.out.println("EXPECTED: tank capacity: 70\n fuel consumption: 15\n maker: BWM\n mileage: 0.0\n current fuel: 30\n last trip distance: 0.0\n");
-		System.out.println("ACTUAL:" + bmw);
+		testLine("current fuel", 30, bmw.getCurrentFuel());
 		separator();
 		System.out.println("Driving our car 100km");
 		bmw.startTrip(100);
-		System.out.println("EXPECTED: tank capacity: 70\n fuel consumption: 15\n maker: BWM\n mileage: 100.0\n current fuel: 15\n last trip distance: 100.0\n");
-		System.out.println("ACTUAL:" + bmw);
+		testLine("mileage", 100.0, bmw.getMileage());
+		testLine("last trip distance", 100.0, 100.0);
 		separator();
 		System.out.println("Trying to drive out car 150km more..");
-		bmw.startTrip(150);
-		System.out.println("EXPECTED: Cannot reach destination");
+		testLine("driving car possible:", false, bmw.startTrip(150));
 		separator();
+		System.out.println("Trying to drive out car 25km more..");
+		testLine("last trip distance:", 10, bmw.startTrip(25));
+	}
+	
+	public static void testLine(String attribute, Object actual, Object expected) {
+		System.out.println("-> " +attribute + "\n EXPECTED:" + expected.toString() + "\n ACTUAL:" + actual.toString());
 	}
 
 	public static void separator() {

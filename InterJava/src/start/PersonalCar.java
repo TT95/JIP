@@ -1,12 +1,10 @@
 package start;
 
-import sun.misc.IOUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -15,10 +13,11 @@ import java.util.List;
  */
 public class PersonalCar extends MyCar {
 
-    private final Gender DEFGENDER = Gender.MALE;
-    private final String DEFNAMEMALE = "John";
-    private final String DEFNAMEFEMALE = "Jane";
-    private final String DEFSURNAME = "Doe";
+    private final static String DEFNAMEMALE = "John";
+    private final static String DEFNAMEFEMALE = "Jane";
+    private final static String DEFSURNAME = "Doe";
+    private final static Gender DEFGENDER = Gender.MALE;
+    
 
     private Gender gender;
     private String name;
@@ -32,14 +31,23 @@ public class PersonalCar extends MyCar {
 
     public PersonalCar(String input) {
         super(input);
-
+        
         String[] arguments = input.split(";");
+        
+        if(arguments.length < 7) {
+        	gender = DEFGENDER;
+        	name = DEFNAMEMALE;
+        	lastName = DEFSURNAME;
+        	purchaseDate = new GregorianCalendar();
+        }
+        
         if (popularNames == null) {
             getPopularNames();
         }
+        
         gender = Gender.toValue(arguments[3]);
-        String name = arguments[4];
-        String lastName = arguments[5];
+        String providedName = arguments[4];
+        String providedLastName = arguments[5];
         try {
             String[] date = arguments[6].split("/");
             purchaseDate = new GregorianCalendar(Integer.parseInt(date[0]), Integer.parseInt(date[1]), Integer.parseInt(date[2]));
@@ -48,20 +56,20 @@ public class PersonalCar extends MyCar {
         }
         lastTripDate = new GregorianCalendar(0,0,0);
         if (gender.equals(Gender.MALE)) {
-            if (popularMaleNames.contains(name)) {
-                this.name = name;
+            if (popularMaleNames.contains(providedName)) {
+                this.name = providedName;
             } else {
                 this.name = DEFNAMEMALE;
             }
         }
         if (gender.equals(Gender.FEMALE)) {
-            if (popularFemaleNames.contains(name)) {
-                this.name = name;
+            if (popularFemaleNames.contains(providedName)) {
+                this.name = providedName;
             } else {
                 this.name = DEFNAMEFEMALE;
             }
         }
-        this.lastName = correctLastName(lastName) ? lastName : DEFSURNAME;
+        this.lastName = correctLastName(providedLastName) ? providedLastName : DEFSURNAME;
     }
 
     private static void getPopularNames(){
@@ -94,12 +102,14 @@ public class PersonalCar extends MyCar {
     public boolean startTrip(double tripDistance, int year, int month, int day) {
         GregorianCalendar lastTripDateInput = new GregorianCalendar(year, month, day);
         if (lastTripDateInput.compareTo(purchaseDate) < 0) {
-            System.out.println("Wrong date of traveling!!");
             lastTripDate = new GregorianCalendar(0,0,0);
+            super.startTrip(tripDistance);
+            return false;
         } else {
             lastTripDate = lastTripDateInput;
+            return super.startTrip(tripDistance);
         }
-        return super.startTrip(tripDistance);
+       
     }
 
     @Override
@@ -112,34 +122,56 @@ public class PersonalCar extends MyCar {
                 + "lastTripDate: " + lastTripDate.getTime() + System.lineSeparator();
 
     }
+    
 
-    public static void testMe() {
-        System.out.println("Creating a test car with following string (tankCapacity;fuelConsumption;maker;gender;name;surname;date): 30;6;Ford;male;Logan;Iwo;1995/10/1");
-        PersonalCar car1 = new PersonalCar("30;6;Ford;male;Logan;Iwo;1995/10/1");
-        System.out.println("EXPECTED: gender: MALE\n name: Logan\n surname: Iwo\n purchaseDate: 1995/10/1\n lastTripDate: null");
-        System.out.println("ACTUAL:" + car1);
+    public Gender getGender() {
+		return gender;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public GregorianCalendar getLastTripDate() {
+		return lastTripDate;
+	}
+
+	public GregorianCalendar getPurchaseDate() {
+		return purchaseDate;
+	}
+
+	public static void testMe() {
+    	
+    	
+    	System.out.println("Creating a test car with following string (tankCapacity;fuelConsumption;maker;gender;name;surname;date): 30;6;Ford;male;Logan;Iwo;1995/10/1");
+    	PersonalCar car1 = new PersonalCar("30;6;Ford;male;Logan;Iwo;1995/10/1");
+		testLine("name", "Logan", car1.getName());
+		testLine("surname", "Iwo", car1.getLastName());
+		testLine("purchase date", "1995/10/1", car1.getPurchaseDate().getTime());
+        testLine("gender", "male", car1.getGender());
         separator();
         System.out.println("Creating a test car with following string: 30;6;Ford;female;Logan;BACON;");
-        PersonalCar car2 = new PersonalCar("30;6;Ford;female;Logan;BACON;");
-        System.out.println("EXPECTED: gender: FEMALE\n name: Jane\n surname: Doe\n purchaseDate: currentTime\n lastTripDate: null");
-        System.out.println("ACTUAL:" + car2);
-        separator();
-        System.out.println("Creating a test car for driving with following string: 30;6;Ford;male;Theo;Smith;2015/10/1");
-        PersonalCar car = new PersonalCar("30;6;Ford;male;Theo;Smith;2015/10/1");
-        System.out.println("EXPECTED: gender: Male\n name: Theo\n surname: Smith\n purchaseDate: 2015/10/1\n lastTripDate: null");
-        System.out.println("ACTUAL:" + car);
-        separator();
+		PersonalCar car = new PersonalCar("30;6;Ford;female;Logan;BACON;");
+		testLine("name", DEFNAMEFEMALE, car.getName());
+		testLine("surname", DEFSURNAME, car.getLastName());
+		separator();
+		System.out.println("Creating a test car for driving with following string: 30;6;Ford;male;Theo;Smith;2015/10/1");
+		PersonalCar ford = new PersonalCar("30;6;Ford;male;Theo;Smith;2015/10/1");
+		testLine("pruchaseDate", "2015/10/1", ford.getPurchaseDate().getTime());
+		separator();
         System.out.println("Tanking car and starting a trip on 2015/10/2");
         car.tankIt(30);
         car.startTrip(20, 2015, 10, 2);
-        System.out.println("EXPECTED: gender: Male\n name: Theo\n surname: Smith\n purchaseDate: 2015/10/1\n lastTripDate: 2015/10/2");
-        System.out.println("ACTUAL:" + car);
-        separator();
+        testLine("lastTripDistance", "2015/10/2", ford.getLastTripDate().getTime());
+		separator();
         System.out.println("Tanking car and starting a trip to the past!! 2014/10/2");
         car.startTrip(20, 2014, 10, 2);
-        System.out.println("EXPECTED: gender: Male\n name: Theo\n surname: Smith\n purchaseDate: 2015/10/1\n lastTripDate: null");
-        System.out.println("ACTUAL:" + car);
-        separator();
+        testLine("lastTripDistance", "null", ford.getLastTripDate().getTime());
+
     }
 
     public static void main(String[] args) {
