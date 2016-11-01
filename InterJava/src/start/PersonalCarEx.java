@@ -23,9 +23,6 @@ public class PersonalCarEx extends MyCarEx{
     private GregorianCalendar purchaseDate;
 
 
-    private static List<String> popularMaleNames;
-    private static List<String> popularFemaleNames;
-
     public PersonalCarEx(String input) {
         super(input);
 
@@ -39,8 +36,6 @@ public class PersonalCarEx extends MyCarEx{
             return;
         }
 
-        popularMaleNames = PopularNames.getPopularMaleNames();
-        popularFemaleNames = PopularNames.getPopularFemaleNames();
         lastTripDate = new GregorianCalendar(0,0,0);
 
         gender = Gender.toValue(arguments[3]);
@@ -65,7 +60,7 @@ public class PersonalCarEx extends MyCarEx{
     private GregorianCalendar parseDate(String date) throws IncorrectDate {
         String[] dateArr = date.split("/");
         if (dateArr.length != 3) {
-            throw new IncorrectDate("Date argument incorrect!");
+            throw new IncorrectDate(date, "Date argument incorrect!");
         }
         return new GregorianCalendar(Integer.parseInt(dateArr[0]), Integer.parseInt(dateArr[1])-1, Integer.parseInt(dateArr[2]));
     }
@@ -75,20 +70,15 @@ public class PersonalCarEx extends MyCarEx{
         if ( !lastName.matches(".*\\d+.*") && modifiedLastName.equals(lastName)) {
             return lastName;
         }
-        throw new IncorrectLastName("Last name must start with capital letter and must not contain numbers!");
+        throw new IncorrectLastName(lastName, "Last name must start with capital letter and must not contain numbers!");
     }
 
     private String parseName(String name) throws IncorrectName {
-        if (gender.equals(Gender.MALE)) {
-            if (!popularMaleNames.contains(name)) {
-                throw new IncorrectName("Male name not popular!");
-            }
+        if (PopularNames.isCorrectName(name, gender)) {
+            return name;
         } else {
-            if (popularFemaleNames.contains(name)) {
-                throw new IncorrectName("Female name not popular!");
-            }
+            throw new IncorrectName(name, "Given name is not popular!");
         }
-        return name;
     }
 
     @Override

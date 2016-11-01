@@ -5,8 +5,12 @@ package start.ex;
  */
 public class IncorrectDate extends IncorrectInput {
 
-    public IncorrectDate(String message) {
-        super(message);
+    public IncorrectDate(String input) {
+        super(input);
+    }
+
+    public IncorrectDate(String input, String message) {
+        super(input,message);
     }
 
     public IncorrectDate() {

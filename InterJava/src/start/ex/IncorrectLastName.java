@@ -5,10 +5,15 @@ package start.ex;
  */
 public class IncorrectLastName extends IncorrectInput {
 
-    public IncorrectLastName(String message) {
-        super(message);
+    public IncorrectLastName(String input) {
+        super(input);
+    }
+
+    public IncorrectLastName(String input, String message) {
+        super(input,message);
     }
 
     public IncorrectLastName() {
+
     }
 }

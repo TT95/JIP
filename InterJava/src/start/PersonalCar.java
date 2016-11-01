@@ -21,10 +21,6 @@ public class PersonalCar extends MyCar {
     private GregorianCalendar lastTripDate;
     private GregorianCalendar purchaseDate;
 
-
-    private static List<String> popularMaleNames;
-    private static List<String> popularFemaleNames;
-
     public PersonalCar(String input) {
         super(input);
         
@@ -32,15 +28,12 @@ public class PersonalCar extends MyCar {
         
         if(arguments.length < 7) {
         	gender = DEFGENDER;
-        	name = DEFNAMEMALE;
+        	name = gender.equals(Gender.MALE)?DEFNAMEMALE:DEFNAMEFEMALE;
         	lastName = DEFSURNAME;
         	purchaseDate = new GregorianCalendar();
             return;
         }
         
-        popularMaleNames = PopularNames.getPopularMaleNames();
-        popularFemaleNames = PopularNames.getPopularFemaleNames();
-
         gender = Gender.toValue(arguments[3]);
         String providedName = arguments[4];
         String providedLastName = arguments[5];
@@ -51,20 +44,13 @@ public class PersonalCar extends MyCar {
             purchaseDate = new GregorianCalendar();
         }
         lastTripDate = new GregorianCalendar(0,0,0);
-        if (gender.equals(Gender.MALE)) {
-            if (popularMaleNames.contains(providedName)) {
-                this.name = providedName;
-            } else {
-                this.name = DEFNAMEMALE;
-            }
+
+        if (PopularNames.isCorrectName(providedName, gender)) {
+            name = providedName;
+        } else {
+            name = gender.equals(Gender.MALE)?DEFNAMEMALE:DEFNAMEFEMALE;
         }
-        if (gender.equals(Gender.FEMALE)) {
-            if (popularFemaleNames.contains(providedName)) {
-                this.name = providedName;
-            } else {
-                this.name = DEFNAMEFEMALE;
-            }
-        }
+
         this.lastName = correctLastName(providedLastName) ? providedLastName : DEFSURNAME;
     }
 
@@ -139,7 +125,7 @@ public class PersonalCar extends MyCar {
         separator();
         System.out.println("Creating a test car with following string: 30;6;Ford;female;Logan;BACON;");
 		PersonalCar car = new PersonalCar("30;6;Ford;female;Logan;BACON;");
-		testLine("name", DEFNAMEFEMALE, car.getName());
+		testLine("name", DEFNAMEMALE, car.getName());
 		testLine("surname", DEFSURNAME, car.getLastName());
 		separator();
 		System.out.println("Creating a test car for driving with following string: 30;6;Ford;male;Theo;Smith;2015/10/1");

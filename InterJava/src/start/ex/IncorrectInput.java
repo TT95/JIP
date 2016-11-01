@@ -6,10 +6,16 @@ package start.ex;
 public class IncorrectInput extends Exception {
 
     private String message;
-    private final static String idMessage = "Input error ";
+    private String input;
+    private final static String idMessage = "Input error!";
 
-    public IncorrectInput(String message) {
+    public IncorrectInput(String input, String message) {
+        this.input = input;
         this.message = message;
+    }
+
+    public IncorrectInput(String input) {
+        this.input = input;
     }
 
     public IncorrectInput() {
@@ -17,6 +23,13 @@ public class IncorrectInput extends Exception {
 
     @Override
     public String toString() {
-        return idMessage + "message:" + message==null?"":message;
+        String string = idMessage;
+        if (input != null) {
+            string+= " input:\"" + input + "\"";
+        }
+        if (message != null) {
+            string += " message:\"" + message + "\"";
+        }
+        return string;
     }
 }

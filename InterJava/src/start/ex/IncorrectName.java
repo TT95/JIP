@@ -5,8 +5,12 @@ package start.ex;
  */
 public class IncorrectName extends IncorrectInput {
 
-    public IncorrectName(String message) {
-        super(message);
+    public IncorrectName(String input) {
+        super(input);
+    }
+
+    public IncorrectName(String input, String message) {
+        super(input,message);
     }
 
     public IncorrectName() {

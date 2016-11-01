@@ -52,4 +52,9 @@ public class PopularNames {
         }
         return popularFemaleNames;
     }
+
+    public static boolean isCorrectName(String name, Gender gender) {
+        return gender.equals(Gender.MALE)?
+                getPopularMaleNames().contains(name):getPopularFemaleNames().contains(name);
+    }
 }
