@@ -1,10 +1,6 @@
 package start;
 
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -25,7 +21,7 @@ public class PersonalCar extends MyCar {
     private GregorianCalendar lastTripDate;
     private GregorianCalendar purchaseDate;
 
-    private static List<String> popularNames;
+
     private static List<String> popularMaleNames;
     private static List<String> popularFemaleNames;
 
@@ -39,18 +35,18 @@ public class PersonalCar extends MyCar {
         	name = DEFNAMEMALE;
         	lastName = DEFSURNAME;
         	purchaseDate = new GregorianCalendar();
+            return;
         }
         
-        if (popularNames == null) {
-            getPopularNames();
-        }
-        
+        popularMaleNames = PopularNames.getPopularMaleNames();
+        popularFemaleNames = PopularNames.getPopularFemaleNames();
+
         gender = Gender.toValue(arguments[3]);
         String providedName = arguments[4];
         String providedLastName = arguments[5];
         try {
             String[] date = arguments[6].split("/");
-            purchaseDate = new GregorianCalendar(Integer.parseInt(date[0]), Integer.parseInt(date[1]), Integer.parseInt(date[2]));
+            purchaseDate = new GregorianCalendar(Integer.parseInt(date[0]), Integer.parseInt(date[1])-1, Integer.parseInt(date[2]));
         } catch (Exception e) {
             purchaseDate = new GregorianCalendar();
         }
@@ -72,19 +68,6 @@ public class PersonalCar extends MyCar {
         this.lastName = correctLastName(providedLastName) ? providedLastName : DEFSURNAME;
     }
 
-    private static void getPopularNames(){
-        List<String> names = new ArrayList<>();
-        try {
-            names = Files.readAllLines(Paths.get("res/PopularNames.txt"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        popularNames = names;
-        int index = names.indexOf("#### Girls'");
-        popularMaleNames = names.subList(1,index); //skipping first line
-        popularFemaleNames = names.subList(index + 1, names.size());
-    }
-
     private boolean correctLastName(String lastName) {
         String modifiedLastName = lastName.substring(0, 1).toUpperCase() + lastName.substring(1).toLowerCase();
         if ( !lastName.matches(".*\\d+.*") && modifiedLastName.equals(lastName)) {
@@ -100,7 +83,7 @@ public class PersonalCar extends MyCar {
     }
 
     public boolean startTrip(double tripDistance, int year, int month, int day) {
-        GregorianCalendar lastTripDateInput = new GregorianCalendar(year, month, day);
+        GregorianCalendar lastTripDateInput = new GregorianCalendar(year, month-1, day);
         if (lastTripDateInput.compareTo(purchaseDate) < 0) {
             lastTripDate = new GregorianCalendar(0,0,0);
             super.startTrip(tripDistance);
@@ -164,12 +147,12 @@ public class PersonalCar extends MyCar {
 		testLine("pruchaseDate", "2015/10/1", ford.getPurchaseDate().getTime());
 		separator();
         System.out.println("Tanking car and starting a trip on 2015/10/2");
-        car.tankIt(30);
-        car.startTrip(20, 2015, 10, 2);
+        ford.tankIt(30);
+        ford.startTrip(20, 2015, 10, 2);
         testLine("lastTripDistance", "2015/10/2", ford.getLastTripDate().getTime());
 		separator();
         System.out.println("Tanking car and starting a trip to the past!! 2014/10/2");
-        car.startTrip(20, 2014, 10, 2);
+        ford.startTrip(20, 2014, 10, 2);
         testLine("lastTripDistance", "null", ford.getLastTripDate().getTime());
 
     }
