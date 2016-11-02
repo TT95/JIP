@@ -1,13 +1,15 @@
 package start.test;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Before;
 import org.junit.Test;
-import start.CarMakers;
+
 import start.MyCarEx;
 import start.ex.ImpossibleDrive;
+import start.ex.IncorrectInput;
+import start.ex.IncorrectTankCapacity;
 import start.ex.TankOverload;
-import static org.junit.Assert.assertEquals;
 
 /**
  * Created by teo on 11/1/16.
@@ -20,6 +22,21 @@ public class MyCarExTest {
     public void setUp() throws Exception {
         bmw = new MyCarEx("70;15;BMW");
 
+    }
+    
+    @Test (expected = IncorrectInput.class)
+    public void testConstructor1() throws IncorrectInput{
+    	new MyCarEx("70;15");
+    }
+    
+    @Test (expected = IncorrectInput.class)
+    public void testConstructor2() throws IncorrectInput{
+    	new MyCarEx("70;1a5;FORD");
+    }
+    
+    @Test (expected = IncorrectTankCapacity.class)
+    public void testConstructor3() throws IncorrectInput{
+    	new MyCarEx("10000;1a5;FORD");
     }
 
     @Test (expected = TankOverload.class)
@@ -44,14 +61,6 @@ public class MyCarExTest {
         bmw.tankIt(30);
         bmw.startTrip(100);
         assertEquals(bmw.getMileage(), 100, 0.001);
-    }
-
-    @Test
-    public void testDefaultValuesInConstruct() {
-        MyCarEx car = new MyCarEx("10;10");
-        assertEquals(car.getMaker(), CarMakers.NOTKNOWN.toString());
-        assertEquals(car.getFuelConsumption(), 5);
-        assertEquals(car.getTankCapacity(),40);
     }
 
 }

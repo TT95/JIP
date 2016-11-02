@@ -1,6 +1,9 @@
 package start;
 
 import start.ex.ImpossibleDrive;
+import start.ex.IncorrectFuelConsumption;
+import start.ex.IncorrectInput;
+import start.ex.IncorrectTankCapacity;
 import start.ex.TankOverload;
 
 /**
@@ -12,8 +15,6 @@ public class MyCarEx {
     private static final int TANKMIN = 20;
     private static final int TANKCONSMIN = 3;
     private static final int TANKCONSMAX = 20;
-    private static final int TANKDEF = 40;
-    private static final int TANKCONDEF = 5;
     private static final int CURRFUELDEF = 0;
     private static final double MILEAGEDEF = 0.0;
     private static final double LASTTRIPDEF = 0.0;
@@ -26,30 +27,39 @@ public class MyCarEx {
     private double lastTripDistance;
 
 
-    public MyCarEx(String input) {
-        String[] arguments = input.split(";");
-        //wrong input
-        if(arguments.length < 3) {
-            tankCapacity = TANKDEF;
-            fuelConsumption = TANKCONDEF;
-            maker = CarMakers.NOTKNOWN;
+    public MyCarEx(String input) throws IncorrectInput {
+        
+        try {
+        	String[] arguments = input.split(";");
+        	tankCapacity = parseTankCapacity(arguments[0]);
+        	fuelConsumption = parseFuelConsumption(arguments[1]);
+            String makerInput = arguments[2];
+            maker=CarMakers.toValue(makerInput);
             mileage = MILEAGEDEF;
             currentFuel = CURRFUELDEF;
-            lastTripDistance = LASTTRIPDEF;
-            return;
+            lastTripDistance = LASTTRIPDEF;            
+        } catch (NumberFormatException|IndexOutOfBoundsException ex ) {
+        	throw new IncorrectInput(input,"There is error in provided argument!");
         }
-        int tankCapacityInput = Integer.parseInt(arguments[0]);
-        int fuelConsumptionInput = Integer.parseInt(arguments[1]);
-        String makerInput = arguments[2];
-        tankCapacity = TANKMIN < tankCapacityInput && tankCapacityInput < TANKMAX ? tankCapacityInput : TANKDEF;
-        fuelConsumption = TANKCONSMIN < fuelConsumptionInput && fuelConsumptionInput < TANKCONSMAX ?
-                fuelConsumptionInput : TANKCONDEF;
-        maker=CarMakers.toValue(makerInput);
-        mileage = MILEAGEDEF;
-        currentFuel = CURRFUELDEF;
-        lastTripDistance = LASTTRIPDEF;
 
     }
+    
+    private int parseTankCapacity(String input) throws IncorrectTankCapacity {
+    	int tankCapacityInput = Integer.parseInt(input);
+    	if ( TANKMIN < tankCapacityInput && tankCapacityInput < TANKMAX ) {
+    		return tankCapacityInput;
+    	}
+    	throw new IncorrectTankCapacity(input, "Tank capacity not legal!");    	
+    }
+    
+    private int parseFuelConsumption(String input) throws IncorrectFuelConsumption {
+    	int fuelConsumptionInput = Integer.parseInt(input);
+    	if ( TANKCONSMIN < fuelConsumptionInput && fuelConsumptionInput < TANKCONSMAX ) {
+    		return fuelConsumptionInput;
+    	}
+    	throw new IncorrectFuelConsumption(input, "Fuel consumpion not legal!");    	
+    }
+    
     //changed this method to exception
     public void tankIt(double howMuch) throws TankOverload {
         if(howMuch > tankCapacity) {

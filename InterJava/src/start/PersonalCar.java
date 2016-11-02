@@ -2,7 +2,8 @@ package start;
 
 
 import java.util.GregorianCalendar;
-import java.util.List;
+
+import start.ex.IncorrectGender;
 
 /**
  * Created by teo on 10/17/16.
@@ -21,7 +22,7 @@ public class PersonalCar extends MyCar {
     private GregorianCalendar lastTripDate;
     private GregorianCalendar purchaseDate;
 
-    public PersonalCar(String input) {
+    public PersonalCar(String input) throws IncorrectGender {
         super(input);
         
         String[] arguments = input.split(";");
@@ -115,31 +116,35 @@ public class PersonalCar extends MyCar {
 
 	public static void testMe() {
     	
+    	try {
+    		System.out.println("Creating a test car with following string (tankCapacity;fuelConsumption;maker;gender;name;surname;date): 30;6;Ford;male;Logan;Iwo;1995/10/1");
+        	PersonalCar car1 = new PersonalCar("30;6;Ford;male;Logan;Iwo;1995/10/1");
+    		testLine("name", "Logan", car1.getName());
+    		testLine("surname", "Iwo", car1.getLastName());
+    		testLine("purchase date", "1995/10/1", car1.getPurchaseDate().getTime());
+            testLine("gender", "male", car1.getGender());
+            separator();
+            System.out.println("Creating a test car with following string: 30;6;Ford;female;Logan;BACON;");
+    		PersonalCar car = new PersonalCar("30;6;Ford;female;Logan;BACON;");
+    		testLine("name", DEFNAMEMALE, car.getName());
+    		testLine("surname", DEFSURNAME, car.getLastName());
+    		separator();
+    		System.out.println("Creating a test car for driving with following string: 30;6;Ford;male;Theo;Smith;2015/10/1");
+    		PersonalCar ford = new PersonalCar("30;6;Ford;male;Theo;Smith;2015/10/1");
+    		testLine("pruchaseDate", "2015/10/1", ford.getPurchaseDate().getTime());
+    		separator();
+            System.out.println("Tanking car and starting a trip on 2015/10/2");
+            ford.tankIt(30);
+            ford.startTrip(20, 2015, 10, 2);
+            testLine("lastTripDistance", "2015/10/2", ford.getLastTripDate().getTime());
+    		separator();
+            System.out.println("Tanking car and starting a trip to the past!! 2014/10/2");
+            ford.startTrip(20, 2014, 10, 2);
+            testLine("lastTripDistance", "null", ford.getLastTripDate().getTime());
+    	} catch (Exception ex) {
+    		ex.printStackTrace();
+    	}
     	
-    	System.out.println("Creating a test car with following string (tankCapacity;fuelConsumption;maker;gender;name;surname;date): 30;6;Ford;male;Logan;Iwo;1995/10/1");
-    	PersonalCar car1 = new PersonalCar("30;6;Ford;male;Logan;Iwo;1995/10/1");
-		testLine("name", "Logan", car1.getName());
-		testLine("surname", "Iwo", car1.getLastName());
-		testLine("purchase date", "1995/10/1", car1.getPurchaseDate().getTime());
-        testLine("gender", "male", car1.getGender());
-        separator();
-        System.out.println("Creating a test car with following string: 30;6;Ford;female;Logan;BACON;");
-		PersonalCar car = new PersonalCar("30;6;Ford;female;Logan;BACON;");
-		testLine("name", DEFNAMEMALE, car.getName());
-		testLine("surname", DEFSURNAME, car.getLastName());
-		separator();
-		System.out.println("Creating a test car for driving with following string: 30;6;Ford;male;Theo;Smith;2015/10/1");
-		PersonalCar ford = new PersonalCar("30;6;Ford;male;Theo;Smith;2015/10/1");
-		testLine("pruchaseDate", "2015/10/1", ford.getPurchaseDate().getTime());
-		separator();
-        System.out.println("Tanking car and starting a trip on 2015/10/2");
-        ford.tankIt(30);
-        ford.startTrip(20, 2015, 10, 2);
-        testLine("lastTripDistance", "2015/10/2", ford.getLastTripDate().getTime());
-		separator();
-        System.out.println("Tanking car and starting a trip to the past!! 2014/10/2");
-        ford.startTrip(20, 2014, 10, 2);
-        testLine("lastTripDistance", "null", ford.getLastTripDate().getTime());
 
     }
 

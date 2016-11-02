@@ -1,8 +1,12 @@
 package start;
 
-import start.ex.*;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
-import java.util.*;
+import start.ex.IncorrectDate;
+import start.ex.IncorrectInput;
+import start.ex.IncorrectLastName;
+import start.ex.IncorrectName;
 
 /**
  * Created by teo on 11/1/16.
@@ -14,26 +18,24 @@ public class StudentData {
     private String lastName;
     private GregorianCalendar birthDate;
     private GregorianCalendar matriculationDate;
+    
+
+    private static final String lastNameRegex = "^[A-Z]([a-z])*(-[A-Z]([a-z])*)?";
 
     public StudentData(String input) throws IncorrectInput {
 
         String[] inputArr = input.split(";");
 
-        gender = parseGender(inputArr[0].trim());
-        firstName = parseName(inputArr[1].trim(), gender);
-        lastName = parseLastName(inputArr[2].trim());
-        birthDate = parseDate(inputArr[3].trim());
-        matriculationDate = parseMatriculationDate(inputArr[4].trim());
-
-    }
-
-    private Gender parseGender(String input) throws IncorrectGender {
-        List<String> possibleInputs = Arrays.asList("Male", "Female", "M", "F");
-        if (!possibleInputs.contains(input)) {
-            throw new IncorrectGender(input, "Incorrect input for gender!");
+        try {
+        	gender = Gender.toValue(inputArr[0].trim());
+            firstName = parseName(inputArr[1].trim(), gender);
+            lastName = parseLastName(inputArr[2].trim());
+            birthDate = parseDate(inputArr[3].trim());
+            matriculationDate = parseMatriculationDate(inputArr[4].trim());
+        } catch (IndexOutOfBoundsException ex) {
+        	throw new IncorrectInput(input,"Incorrect number of arguments!");
         }
-        return Gender.toValue(input);
-
+        
     }
 
     private String parseName(String name, Gender gender) throws IncorrectName {
@@ -45,7 +47,7 @@ public class StudentData {
     }
 
     private String parseLastName(String lastName) throws IncorrectLastName {
-        String pattern = "^[A-Z]([a-z])*(-[A-Z]([a-z])*)?";
+        String pattern = lastNameRegex;
         if (lastName.matches(pattern)) {
             return lastName;
         } else {

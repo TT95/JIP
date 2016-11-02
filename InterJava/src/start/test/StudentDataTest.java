@@ -1,12 +1,16 @@
 package start.test;
 
-import org.junit.Before;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
+
 import start.Gender;
 import start.StudentData;
-import start.ex.*;
-
-import static org.junit.Assert.*;
+import start.ex.IncorrectDate;
+import start.ex.IncorrectGender;
+import start.ex.IncorrectInput;
+import start.ex.IncorrectLastName;
+import start.ex.IncorrectName;
 
 /**
  * Created by teo on 11/1/16.
@@ -27,7 +31,7 @@ public class StudentDataTest {
 
     @Test
     public void argumentsExample3() throws IncorrectInput {
-        StudentData student = new StudentData("F;Mary; Brown; 89/03/20;10/09/01");
+        StudentData student = new StudentData("F;Mary; Brown; 89/02/30;10/09/01");
         assertEquals("Brown", student.getLastName());
     }
 

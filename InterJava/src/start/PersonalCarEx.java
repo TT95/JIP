@@ -1,20 +1,17 @@
 package start;
 
-import start.ex.*;
-
 import java.util.GregorianCalendar;
-import java.util.List;
+
+import start.ex.ImpossibleDrive;
+import start.ex.IncorrectDate;
+import start.ex.IncorrectInput;
+import start.ex.IncorrectLastName;
+import start.ex.IncorrectName;
 
 /**
  * Created by teo on 10/27/16.
  */
 public class PersonalCarEx extends MyCarEx{
-
-    private final static String DEFNAMEMALE = "John";
-    private final static String DEFNAMEFEMALE = "Jane";
-    private final static String DEFSURNAME = "Doe";
-    private final static Gender DEFGENDER = Gender.MALE;
-
 
     private Gender gender;
     private String name;
@@ -23,35 +20,19 @@ public class PersonalCarEx extends MyCarEx{
     private GregorianCalendar purchaseDate;
 
 
-    public PersonalCarEx(String input) {
-        super(input);
-
-        String[] arguments = input.split(";");
-
-        if(arguments.length < 7) {
-            gender = DEFGENDER;
-            name = DEFNAMEMALE;
-            lastName = DEFSURNAME;
-            purchaseDate = new GregorianCalendar();
-            return;
-        }
-
-        lastTripDate = new GregorianCalendar(0,0,0);
-
-        gender = Gender.toValue(arguments[3]);
-        String providedName = arguments[4];
-        String providedLastName = arguments[5];
-
-
-        // if any of the input is incorrect set all values to default
+    public PersonalCarEx(String input) throws IncorrectInput {
+        super(input); 
         try {
+        	String[] arguments = input.split(";");
+            lastTripDate = new GregorianCalendar(0,0,0);
+            gender = Gender.toValue(arguments[3]);
+            String providedName = arguments[4];
+            String providedLastName = arguments[5];
             purchaseDate = parseDate(arguments[6]);
             this.lastName = parseLastName(providedLastName);
             this.name = parseName(providedName);
-        } catch (IncorrectInput i) {
-            purchaseDate = new GregorianCalendar();
-            this.lastName = DEFSURNAME;
-            this.name = gender==Gender.MALE?DEFNAMEMALE:DEFNAMEFEMALE;
+        } catch (IndexOutOfBoundsException ex) {
+           throw new IncorrectInput(input, "Incorrect number of arguments!");
         }
 
     }

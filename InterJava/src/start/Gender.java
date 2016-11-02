@@ -1,5 +1,10 @@
 package start;
 
+import java.util.Arrays;
+import java.util.List;
+
+import start.ex.IncorrectGender;
+
 /**
  * Created by teo on 10/17/16.
  */
@@ -10,19 +15,19 @@ public enum Gender {
      * This method returns default value (MALE) if
      * given string is not parsable
      */
-    static Gender toValue(String string) {
-        if (string.equals("M")) {
-            return Gender.MALE;
+    static Gender toValue(String input) throws IncorrectGender{
+        if(legalGenderInputsMale.contains(input)) {
+        	return MALE;
         }
-        if (string.equals("F")) {
-            return Gender.FEMALE;
+        if(legalGenderInputsFemale.contains(input)) {
+        	return FEMALE;
         }
-        for(Gender gender : Gender.values()) {
-            if(gender.name().equals(string.toUpperCase())) {
-                return gender;
-            }
-        }
-        return Gender.MALE;
+        throw new IncorrectGender();
     }
 
+    private static final List<String> legalGenderInputsMale = 
+    		Arrays.asList("Male","M","MALE","m","male");
+    	
+    private static final List<String> legalGenderInputsFemale = 
+    		Arrays.asList("Female","F","FEMALE","f","female");
 }

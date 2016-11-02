@@ -5,7 +5,9 @@ package start.ex;
  */
 public class ImpossibleDrive extends Exception{
 
-    private static final String idMessage = "Impossible driving trip: ";
+
+	private static final long serialVersionUID = 1L;
+	private static final String idMessage = "Impossible driving trip: ";
     private String message;
 
     public ImpossibleDrive(String message) {

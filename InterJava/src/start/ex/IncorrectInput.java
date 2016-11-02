@@ -4,6 +4,8 @@ package start.ex;
  * Created by teo on 10/26/16.
  */
 public class IncorrectInput extends Exception {
+	
+	private static final long serialVersionUID = 1L;
 
     private String message;
     private String input;
