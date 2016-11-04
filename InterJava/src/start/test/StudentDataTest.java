@@ -31,13 +31,13 @@ public class StudentDataTest {
 
     @Test
     public void argumentsExample3() throws IncorrectInput {
-        StudentData student = new StudentData("F;Mary; Brown; 89/02/30;10/09/01");
+        StudentData student = new StudentData("F;Mary; Brown; 89/02/28;10/09/01");
         assertEquals("Brown", student.getLastName());
     }
 
     @Test (expected = IncorrectDate.class)
     public void argumentTest1() throws IncorrectInput {
-        new StudentData("Male; John; Brown-Jones; 89/20;2010/09/01");
+        new StudentData("Male; John; Brown-Jones; 2009/03/20;2010/09/01");
     }
 
     @Test (expected = IncorrectName.class)
@@ -59,4 +59,10 @@ public class StudentDataTest {
     public void argumentTest5() throws IncorrectInput {
         new StudentData("Male; John; Brown-Jones; 89/20;1990/09/01");
     }
+
+    @Test (expected = IncorrectDate.class)
+    public void argumentTest6() throws IncorrectInput {
+        new StudentData("Male; John; Brown-Jones; 89/2/30;1990/09/01");
+    }
+
 }

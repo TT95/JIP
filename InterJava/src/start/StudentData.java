@@ -1,6 +1,9 @@
 package start;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 import start.ex.IncorrectDate;
@@ -16,8 +19,8 @@ public class StudentData {
     private Gender gender;
     private String firstName;
     private String lastName;
-    private GregorianCalendar birthDate;
-    private GregorianCalendar matriculationDate;
+    private Calendar birthDate;
+    private Calendar matriculationDate;
     
 
     private static final String lastNameRegex = "^[A-Z]([a-z])*(-[A-Z]([a-z])*)?";
@@ -55,23 +58,29 @@ public class StudentData {
         }
     }
 
-    private GregorianCalendar parseMatriculationDate(String input) throws IncorrectDate {
-        GregorianCalendar date = parseDate(input);
-        if (Calendar.getInstance().get(Calendar.YEAR) - date.get(Calendar.YEAR) > 16) {
+    private Calendar parseMatriculationDate(String input) throws IncorrectDate {
+        Calendar date = parseDate(input);
+        int ageAtMatriculation = date.get(Calendar.YEAR) - birthDate.get(Calendar.YEAR);
+            if (ageAtMatriculation < 16 || ageAtMatriculation > 70) {
             throw new IncorrectDate(input, "Incorrect given date - student too young for matriculation!");
         }
         return date;
     }
 
-    private GregorianCalendar parseDate(String input) throws IncorrectDate {
-        String[] dateArr = input.split("/");
-        if (dateArr.length != 3) {
-            throw new IncorrectDate(input, "Date argument incorrect!");
+    private Calendar parseDate(String input) throws IncorrectDate {
+        Calendar calendar = Calendar.getInstance();
+        try {
+            DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+            DateFormat df2 = new SimpleDateFormat("yy/MM/dd");
+            df.setLenient(false);
+            df2.setLenient(false);
+            Date date = input.split("/")[0].length() == 2 ? df2.parse(input) : df.parse(input);
+            calendar.setTime(date);
+            calendar.getTime();
+        } catch (Exception ex) {
+            throw new IncorrectDate(input, "Incorrect date input!");
         }
-        if (dateArr[0].length() == 2) {
-            dateArr[0] = "20" + dateArr[0];
-        }
-        return new GregorianCalendar(Integer.parseInt(dateArr[0]), Integer.parseInt(dateArr[1])-1, Integer.parseInt(dateArr[2]));
+        return calendar;
     }
 
     public Gender getGender() {
@@ -86,11 +95,11 @@ public class StudentData {
         return lastName;
     }
 
-    public GregorianCalendar getBirthDate() {
+    public Calendar getBirthDate() {
         return birthDate;
     }
 
-    public GregorianCalendar getMatriculationDate() {
+    public Calendar getMatriculationDate() {
         return matriculationDate;
     }
 }

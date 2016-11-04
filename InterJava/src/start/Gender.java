@@ -11,10 +11,6 @@ import start.ex.IncorrectGender;
 public enum Gender {
     MALE,FEMALE;
 
-    /**
-     * This method returns default value (MALE) if
-     * given string is not parsable
-     */
     static Gender toValue(String input) throws IncorrectGender{
         if(legalGenderInputsMale.contains(input)) {
         	return MALE;
