@@ -73,14 +73,6 @@ public class StudentFile {
         printAnalyzedLine(IncorrectDate.class);
     }
 
-    public static void main(String[] args) {
-        try {
-            new StudentFile("res/Students.txt").showWrongLines();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     private class LineAnalyzed {
 
         private Integer lineNUm;
@@ -110,6 +102,20 @@ public class StudentFile {
         public String toString() {
             String errorString = getError() == null ? "Line correct" : getError().toString();
             return "Line number:"+lineNUm+" input:\"" + input + "\" " + errorString;
+        }
+    }
+
+
+    public static void main(String[] args) {
+        try {
+            StudentFile studentFile = new StudentFile("res/Students.txt");
+            studentFile.showProperLines();
+//            studentFile.showWrongLines();
+//            studentFile.showFirstNameError();
+//            studentFile.showLastNameError();
+//            studentFile.showDateError();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
