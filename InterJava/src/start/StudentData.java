@@ -43,10 +43,13 @@ public class StudentData {
 
     private String parseName(String name, Gender gender) throws IncorrectName {
         name = name.substring(0, 1).toUpperCase() + name.substring(1);
-        if (PopularNames.isCorrectName(name, gender)) {
-            return name;
+        if (!PopularNames.isPopularName(name)) {
+            throw new IncorrectName(name, "Given name is not popular!");
         }
-        throw new IncorrectName(name, "Given name is not popular!");
+        if (!PopularNames.isCorrectName(name, gender)) {
+            throw new IncorrectName(name,"Given name is not " + gender);
+        }
+        return name;
     }
 
     private String parseLastName(String lastName) throws IncorrectLastName {
@@ -62,7 +65,7 @@ public class StudentData {
         Calendar date = parseDate(input);
         int ageAtMatriculation = date.get(Calendar.YEAR) - birthDate.get(Calendar.YEAR);
             if (ageAtMatriculation < 16 || ageAtMatriculation > 70) {
-            throw new IncorrectDate(input, "Incorrect given date - student too young for matriculation!");
+            throw new IncorrectDate(input, "Incorrect given date - student too young or old for matriculation!");
         }
         return date;
     }
@@ -78,7 +81,7 @@ public class StudentData {
             calendar.setTime(date);
             calendar.getTime();
         } catch (Exception ex) {
-            throw new IncorrectDate(input, "Incorrect date input!");
+            throw new IncorrectDate(input, "Incorrect given date - wrong format or illegal date!");
         }
         return calendar;
     }

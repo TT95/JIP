@@ -9,7 +9,6 @@ public class IncorrectInput extends Exception {
 
     private String message;
     private String input;
-    private final static String idMessage = "Input error!";
 
     public IncorrectInput(String input, String message) {
         this.input = input;
@@ -25,9 +24,9 @@ public class IncorrectInput extends Exception {
 
     @Override
     public String toString() {
-        String string = idMessage;
+        String string = "";
         if (input != null) {
-            string+= " input:\"" + input + "\"";
+            string+= " Input error:\"" + input + "\"";
         }
         if (message != null) {
             string += " message:\"" + message + "\"";

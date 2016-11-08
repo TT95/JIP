@@ -25,19 +25,14 @@ public class PopularNames {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        popularNames = names;
         int index = names.indexOf(fileSeperator);
         popularMaleNames = names.subList(1,index); //skipping first line
         popularFemaleNames = names.subList(index + 1, names.size());
+        popularNames = new ArrayList<>();
+        popularNames.addAll(popularMaleNames);
+        popularNames.addAll(popularFemaleNames);
     }
 
-
-    public static List<String> getPopularNames() {
-        if (popularNames == null) {
-            loadNames();
-        }
-        return popularNames;
-    }
 
     public static List<String> getPopularMaleNames() {
         if (popularMaleNames == null) {
@@ -54,7 +49,17 @@ public class PopularNames {
     }
 
     public static boolean isCorrectName(String name, Gender gender) {
+        if (popularFemaleNames == null) {
+            loadNames();
+        }
         return gender.equals(Gender.MALE)?
                 getPopularMaleNames().contains(name):getPopularFemaleNames().contains(name);
+    }
+
+    public static boolean isPopularName(String name) {
+        if (popularFemaleNames == null) {
+            loadNames();
+        }
+        return popularNames.contains(name);
     }
 }

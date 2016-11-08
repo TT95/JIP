@@ -1,0 +1,9 @@
+M; john; Brown; 1989/03/20;2010/09/01
+Male; John; Brown-Jones; 89/03/20;2010/09/01
+F;Mary;	Brown; 	89/03/20;10/09/01
+Female; john; Brown; 1989/03/20;2010/09/01
+M; john; Brown_Jones; 1989/03/20;2010/09/01
+M; john; Brown; 1929/03/20;2010/09/01
+M; john; Brown; 1989/03/20;1991/09/01
+M; john; Brown; 1989/03/20;2010/09/31
+M; john; Brown; 1989/03/20;2010/02/30
