@@ -2,37 +2,31 @@ package start;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultListModel;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 
-import org.junit.runners.model.Annotatable;
-
-import javax.swing.JList;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JCheckBox;
-import javax.swing.JRadioButton;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.FlowLayout;
-
 public class StudentFileGUI extends JFrame {
+
+	private static final long serialVersionUID = 1L;
 
 	private JPanel contentPane;
 	
@@ -96,8 +90,8 @@ public class StudentFileGUI extends JFrame {
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 		
-		listModel = new DefaultListModel<LineAnalyzed>();
-		anayzedList = new JList<LineAnalyzed>(listModel);
+		listModel = new DefaultListModel<>();
+		anayzedList = new JList<>(listModel);
 		anayzedList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
 		JScrollPane scrollPane = new JScrollPane(anayzedList);
@@ -110,39 +104,51 @@ public class StudentFileGUI extends JFrame {
 		ButtonGroup group = new ButtonGroup();
 		
 		JRadioButton rdbtnProper = new JRadioButton("proper");
-		panel.add(rdbtnProper);
-		
 		JRadioButton rdbtnNotProper = new JRadioButton("not proper");
-		panel.add(rdbtnNotProper);
-		
 		JRadioButton rdbtnFirstNameError = new JRadioButton("first name error");
-		panel.add(rdbtnFirstNameError);
-		
 		JRadioButton rdbtnLastNameError = new JRadioButton("last name error");
+		JRadioButton rdbtnGenderError = new JRadioButton("gender error");
+		JRadioButton rdbtnDateError = new JRadioButton("date error");
+
+		panel.add(rdbtnProper);
+		panel.add(rdbtnNotProper);
+		panel.add(rdbtnFirstNameError);
 		panel.add(rdbtnLastNameError);
-		
+		panel.add(rdbtnGenderError);
+		panel.add(rdbtnDateError);
+
 		group.add(rdbtnProper);
 		group.add(rdbtnNotProper);
 		group.add(rdbtnFirstNameError);
 		group.add(rdbtnLastNameError);
+		group.add(rdbtnGenderError);
+		group.add(rdbtnDateError);
 		
-		rdbtnProper.addActionListener(e -> { newFilter(studentFile.getProperLines()); });
-		rdbtnNotProper.addActionListener(e -> { newFilter(studentFile.getWrongLines());; });
-		rdbtnFirstNameError.addActionListener(e -> { newFilter(studentFile.getFirstNameError()); });
-		rdbtnLastNameError.addActionListener(e -> { newFilter(studentFile.getLastNameError()); });
-		
-		
-		//REMOVE!!
-		/*		try {
-					studentFile = new StudentFile("res/studentData.properties");
-					for(LineAnalyzed line : studentFile.getAnalyzedLines()) {
-						listModel.addElement(line);
-						
+		rdbtnProper.addActionListener(e ->  newFilter(studentFile.getProperLines()));
+		rdbtnNotProper.addActionListener(e ->  newFilter(studentFile.getWrongLines()));
+		rdbtnFirstNameError.addActionListener(e ->  newFilter(studentFile.getFirstNameError()));
+		rdbtnLastNameError.addActionListener(e -> newFilter(studentFile.getLastNameError()));
+		rdbtnGenderError.addActionListener(e ->  newFilter(studentFile.getGenderError()));
+		rdbtnDateError.addActionListener(e ->  newFilter(studentFile.getDateError()));
+
+
+		anayzedList.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent evt) {
+				@SuppressWarnings("unchecked")
+				JList<LineAnalyzed> list = (JList<LineAnalyzed>)evt.getSource();
+				if (evt.getClickCount() == 1) {
+					group.clearSelection();
+				}
+				if (evt.getClickCount() == 2) {
+					int index = list.locationToIndex(evt.getPoint());
+					LineAnalyzed lineAnalyzed = listModel.getElementAt(index);
+					String newInput = JOptionPane.showInputDialog("Edit line:",lineAnalyzed.getInput());
+					if (newInput != null) {
+						lineAnalyzed.setInput(newInput);
 					}
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}*/
+				}
+			}
+		});
 		
 	}
 	

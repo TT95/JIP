@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Properties;
 
 import start.ex.IncorrectDate;
-import start.ex.IncorrectInput;
+import start.ex.IncorrectGender;
 import start.ex.IncorrectLastName;
 import start.ex.IncorrectName;
 
@@ -32,13 +32,7 @@ public class StudentFile {
 
         for (int lineNum=0; lineNum<lines.size(); lineNum++) {
             String line = lines.get(lineNum);
-            try {
-                new StudentData(line);
-            } catch (IncorrectInput incorrectInput) {
-                analyzedLines.add(new LineAnalyzed(lineNum+1,line,incorrectInput));
-                continue;
-            }
-            analyzedLines.add(new LineAnalyzed(lineNum+1,line,null));
+            analyzedLines.add(new LineAnalyzed(lineNum+1,line));
         }
     }
    
@@ -85,6 +79,9 @@ public class StudentFile {
         return getAnalyzedLines(null);
     }
 
+    public List<LineAnalyzed> getGenderError() {
+        return getAnalyzedLines(IncorrectGender.class);
+    }
 
     public List<LineAnalyzed> getFirstNameError() {
     	return getAnalyzedLines(IncorrectName.class);

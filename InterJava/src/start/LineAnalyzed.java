@@ -8,11 +8,22 @@ public class LineAnalyzed {
     private String input;
     //null if not error
     private IncorrectInput error;
+    private StudentData studentData;
 
-    public LineAnalyzed(Integer lineNUm, String input, IncorrectInput error) {
+    public LineAnalyzed(Integer lineNUm, String input) {
         this.lineNUm = lineNUm;
+        setInput(input);
+    }
+
+    public void setInput(String input) {
         this.input = input;
-        this.error = error;
+        try {
+            new StudentData(input);
+        } catch (IncorrectInput i) {
+            this.error = i;
+            return;
+        }
+        error = null;
     }
 
     public Integer getLineNUm() {
@@ -29,6 +40,10 @@ public class LineAnalyzed {
 
     @Override
     public String toString() {
+        return input;
+    }
+
+    public String toFullString() {
         String errorString = getError() == null ? "Line correct" : getError().toString();
         return "Line number:"+lineNUm+" input:\"" + input + "\" " + errorString;
     }
