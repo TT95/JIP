@@ -15,13 +15,17 @@ public class PopularNames {
     private static List<String> popularMaleNames;
     private static List<String> popularFemaleNames;
 
-    private static String fileSeperator = "#### Girls'";
-    private static String filePath = "res/PopularNames.txt";
+    private static final String fileSeperator = "#### Girls'";
+    private static final String defFilePath = "res/PopularNames.txt";
+//    private static final String defFilePath = "./res/PopularNames.txt";
+
+    private static String givenPath = null;
 
     private static void loadNames(){
         List<String> names = new ArrayList<>();
+        String pathToLoad = givenPath==null?defFilePath:givenPath;
         try {
-            names = Files.readAllLines(Paths.get(filePath));
+            names = Files.readAllLines(Paths.get(pathToLoad));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -33,12 +37,23 @@ public class PopularNames {
         popularNames.addAll(popularFemaleNames);
     }
 
+    
+    public static void setPathToFile(String path) {
+    	givenPath = path;
+    }
 
     public static List<String> getPopularMaleNames() {
         if (popularMaleNames == null) {
             loadNames();
         }
         return popularMaleNames;
+    }
+    
+    public static List<String> getPopularNames() {
+        if (popularNames == null) {
+            loadNames();
+        }
+        return popularNames;
     }
 
     public static List<String> getPopularFemaleNames() {

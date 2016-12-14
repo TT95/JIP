@@ -2,17 +2,24 @@ package start;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javafx.scene.layout.Border;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -23,6 +30,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JToolBar;
 
 public class StudentFileGUI extends JFrame {
 
@@ -33,6 +41,10 @@ public class StudentFileGUI extends JFrame {
 	private StudentFile studentFile;
 	private DefaultListModel<LineAnalyzed> listModel;
 	private JList<LineAnalyzed> anayzedList;
+	private JLabel linesCount;
+	private static final String linesText = "Selected lines: ";
+	
+	private static final String defaultStudentFile = "res/Students.txt";
 
 	/**
 	 * Launch the application.
@@ -55,8 +67,6 @@ public class StudentFileGUI extends JFrame {
 	 */
 	public StudentFileGUI() {
 		
-		
-		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1000, 500);
 		
@@ -66,22 +76,23 @@ public class StudentFileGUI extends JFrame {
 		menuBar.add(mnLoad);
 	
 
-		JMenuItem mntmPropertyFile = new JMenuItem("Property file");
-		mntmPropertyFile.addActionListener(e -> {
-			JFileChooser fc = new JFileChooser();
-			int returnVal = fc.showOpenDialog(this);
-			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				try {	
-					File file = fc.getSelectedFile();
-					studentFile = new StudentFile(file.getPath().toString());
-					for(LineAnalyzed line : studentFile.getAnalyzedLines()) {
-						listModel.addElement(line);
+		JMenuItem mntmPropertyFile = new JMenuItem("New student data file");
+		mntmPropertyFile.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser fc = new JFileChooser();
+				int returnVal = fc.showOpenDialog(null);
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					try {	
+						File file = fc.getSelectedFile();
+						studentFile = new StudentFile(file.getPath().toString());
+						loadStudentFile(studentFile);
+					} catch (Exception ex) {
+						JOptionPane.showMessageDialog(null, "Problem reading properties file!");
 					}
-				} catch (Exception ex) {
-					JOptionPane.showMessageDialog(this, "Problem reading properties file!");
 				}
 			}
-
 		});
 		
 		mnLoad.add(mntmPropertyFile);
@@ -97,9 +108,9 @@ public class StudentFileGUI extends JFrame {
 		JScrollPane scrollPane = new JScrollPane(anayzedList);
 		contentPane.add(scrollPane, BorderLayout.CENTER);
 		
-		JPanel panel = new JPanel();
-		contentPane.add(panel, BorderLayout.WEST);
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		JPanel leftPanel = new JPanel();
+		contentPane.add(leftPanel, BorderLayout.WEST);
+		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 		
 		ButtonGroup group = new ButtonGroup();
 		
@@ -110,12 +121,12 @@ public class StudentFileGUI extends JFrame {
 		JRadioButton rdbtnGenderError = new JRadioButton("gender error");
 		JRadioButton rdbtnDateError = new JRadioButton("date error");
 
-		panel.add(rdbtnProper);
-		panel.add(rdbtnNotProper);
-		panel.add(rdbtnFirstNameError);
-		panel.add(rdbtnLastNameError);
-		panel.add(rdbtnGenderError);
-		panel.add(rdbtnDateError);
+		leftPanel.add(rdbtnProper);
+		leftPanel.add(rdbtnNotProper);
+		leftPanel.add(rdbtnFirstNameError);
+		leftPanel.add(rdbtnLastNameError);
+		leftPanel.add(rdbtnGenderError);
+		leftPanel.add(rdbtnDateError);
 
 		group.add(rdbtnProper);
 		group.add(rdbtnNotProper);
@@ -130,14 +141,32 @@ public class StudentFileGUI extends JFrame {
 		rdbtnLastNameError.addActionListener(e -> newFilter(studentFile.getLastNameError()));
 		rdbtnGenderError.addActionListener(e ->  newFilter(studentFile.getGenderError()));
 		rdbtnDateError.addActionListener(e ->  newFilter(studentFile.getDateError()));
+		
+		JPanel bottomPanel = new JPanel();
+		bottomPanel.setLayout(new GridBagLayout());
+		linesCount = new JLabel(linesText);
+		bottomPanel.add(linesCount);
+		getContentPane().add(bottomPanel,BorderLayout.SOUTH);
+		
+		
+		
+		try {
+			studentFile = new StudentFile(defaultStudentFile);
+			loadStudentFile(studentFile);
+		} catch (IOException ignorable) { System.err.println("josok"); }
 
-
+		JOptionPane.showMessageDialog(this,
+		    "Default text file will be loaded.",
+		    "Information",
+		    JOptionPane.INFORMATION_MESSAGE);
+		
 		anayzedList.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent evt) {
 				@SuppressWarnings("unchecked")
 				JList<LineAnalyzed> list = (JList<LineAnalyzed>)evt.getSource();
 				if (evt.getClickCount() == 1) {
 					group.clearSelection();
+					showNumberOfSelectedLines();
 				}
 				if (evt.getClickCount() == 2) {
 					int index = list.locationToIndex(evt.getPoint());
@@ -161,8 +190,18 @@ public class StudentFileGUI extends JFrame {
 			}
 		}
 		anayzedList.setSelectedIndices(indexesToSelect.stream().mapToInt(i -> i).toArray());
+		showNumberOfSelectedLines();
 	}
 	
+	private void loadStudentFile(StudentFile studentFile) {
+		listModel.removeAllElements();
+		for(LineAnalyzed line : studentFile.getAnalyzedLines()) {
+			listModel.addElement(line);
+		}
+	}
 	
-
+	private void showNumberOfSelectedLines() {
+		linesCount.setText(linesText + anayzedList.getSelectedIndices().length);
+	}
+	
 }

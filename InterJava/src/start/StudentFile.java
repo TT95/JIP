@@ -21,13 +21,9 @@ public class StudentFile {
 
     private List<LineAnalyzed> analyzedLines;
     private String filePath;
-    private static final String defaultPropFilePath = "res/studentData.properties";
-
-    public StudentFile(String pathToPropFile) throws IOException {
-
-        filePath = loadPropFile(pathToPropFile);
-
-        List<String> lines = Files.readAllLines(Paths.get(filePath));
+    
+	public StudentFile(String pathToFile) throws IOException {
+        List<String> lines = Files.readAllLines(Paths.get(pathToFile));
         analyzedLines = new ArrayList<>();
 
         for (int lineNum=0; lineNum<lines.size(); lineNum++) {
@@ -35,19 +31,7 @@ public class StudentFile {
             analyzedLines.add(new LineAnalyzed(lineNum+1,line));
         }
     }
-   
 
-    /**
-     * Read prop file and returns path to student file
-     * @throws IOException 
-     * @throws FileNotFoundException 
-     */
-    private String loadPropFile(String pathToProp) throws FileNotFoundException, IOException {
-
-        Properties prop = new Properties();
-        prop.load(new FileInputStream(pathToProp));
-        return  prop.getProperty("path");
-    }
 
     public List<LineAnalyzed> getAnalyzedLines(Class incorrectInputClass) {
     	List<LineAnalyzed> matchingList = new ArrayList<>();
@@ -97,20 +81,6 @@ public class StudentFile {
     
     public List<LineAnalyzed> getAnalyzedLines() {
     	return analyzedLines;
-    }
-
-
-    public static void main(String[] args) {
-        try {
-            StudentFile studentFile = new StudentFile(defaultPropFilePath);
-//            studentFile.showProperLines();
-//            studentFile.showWrongLines();
-//            studentFile.showFirstNameError();
-//            studentFile.showLastNameError();
-//            studentFile.showDateError();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
 
