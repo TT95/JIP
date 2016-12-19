@@ -21,27 +21,16 @@ public class Control extends JPanel {
 	private JLabel value;
 	
 	
-	public Control(ActionListener addAction, ActionListener subAction, String title, Integer startValue) {
+	public Control(ActionListener addAction, ActionListener subAction, String title) {
 		
 		super();
 		add = new JButton("Add");
 		sub = new JButton("Sub");
 		add.addActionListener(addAction);
-		add.addActionListener(e -> {
-			valueInt++;
-			value.setText(valueInt+"");
-		});
 		sub.addActionListener(subAction);
-		sub.addActionListener(e -> {
-			if(valueInt==0) {
-				return;
-			}
-			valueInt--;
-			value.setText(valueInt+"");
-		});
 		this.label = new JLabel(title+":");
-		this.valueInt = startValue;
-		this.value = new JLabel(startValue + "");
+		this.valueInt = 0;
+		this.value = new JLabel(valueInt + "");
 		
 		setLayout(new GridBagLayout());
 		setBorder(BorderFactory.createEtchedBorder());
@@ -63,6 +52,10 @@ public class Control extends JPanel {
 		c.gridy = 1;
 		add(sub,c);
 		
+	}
+	
+	public void setControlValue(int controlValue) {
+		value.setText(controlValue + "");
 	}
 	
 

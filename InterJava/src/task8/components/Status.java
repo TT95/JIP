@@ -40,6 +40,10 @@ public class Status extends JPanel {
 		valueLabel.setText(value);
 	}
 
+	public JLabel getTextLabel() {
+		return textLabel;
+	}
+
 	
 	
 	

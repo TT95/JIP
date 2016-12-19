@@ -26,7 +26,8 @@ public class Grocery {
 	}
 	
 	public synchronized void doJob(GroceryWorker groceryWorker) {
-		while(breadsInStore>=MAX_BREAD_IN_STORE) {
+		while(breadsInStore>=MAX_BREAD_IN_STORE ||
+				(groceryWorker!= GroceryWorker.BAKERY && breadsInStore == 0)) {
 			try {
 				wait();
 			} catch (InterruptedException ignorable) {}
@@ -41,7 +42,7 @@ public class Grocery {
 			breadsBought++;
 			break;
 		case BAKERY:
-			breadsInStore+= 4;
+			breadsInStore+= 1;
 			breadsDelivered++;
 			break;
 		}

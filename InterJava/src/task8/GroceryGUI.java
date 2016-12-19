@@ -5,14 +5,19 @@ import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import task8.components.Control;
+import task8.components.RatsPanel;
 import task8.components.Status;
 
 public class GroceryGUI extends JFrame {
@@ -28,12 +33,16 @@ public class GroceryGUI extends JFrame {
 	private Control customerControl;
 	private Control bakeryControl;
 	
-	private JPanel ratsPanel;
+	private RatsPanel ratsPanel;
 	
 	private Stack<Rat> rats = new Stack<>();
 	private Stack<Customer> customers = new Stack<>();
 	private Stack<Bakery> bakeries = new Stack<>();
-
+	
+	private int numberOfRats = 0;
+	private int numberOfConsumers = 0;
+	private int numberOfBakeries = 0;
+	
 	private static final long serialVersionUID = 1L;
 
 	public static void main(String[] args) {
@@ -66,16 +75,15 @@ public class GroceryGUI extends JFrame {
 		c.fill=GridBagConstraints.HORIZONTAL;
 		c.weightx = 1.0;
 		c.weighty = 1.0;
-		ratControl = new Control( e -> {addRat();}, e -> {removeRat();}, "Rats", 3);
-		customerControl = new Control(e -> {addCustomer();}, e -> {removeCustomer();}, "Customer", 2);
-		bakeryControl = new Control(e -> {addBakery();}, e -> {removeBakery();}, "Bakeries", 1);
+		ratControl = new Control( e -> {addRat();}, e -> {removeRat();}, "Rats");
+		customerControl = new Control(e -> {addCustomer();}, e -> {removeCustomer();}, "Customer");
+		bakeryControl = new Control(e -> {addBakery();}, e -> {removeBakery();}, "Bakeries");
 		controls.add(customerControl,c);
 		controls.add(bakeryControl,c);
 		controls.add(ratControl,c);
 		
 		JPanel monitor = new JPanel(new BorderLayout());
 		JPanel general = new JPanel(new GridBagLayout());
-		ratsPanel = new JPanel(new GridBagLayout());
 		
 		GridBagConstraints generalConstraint = new GridBagConstraints();
 		generalConstraint.insets = new Insets(5, 5, 5, 5);
@@ -97,49 +105,64 @@ public class GroceryGUI extends JFrame {
 		generalConstraint.gridx = 0;
 		general.add(breadsConsumed,generalConstraint);
 		
-		GridBagConstraints ratConstraint = new GridBagConstraints();
-		ratConstraint.weightx = 1.0;
-		ratConstraint.weightx = 1.0;
-		ratsPanel.add(new Status("Rat 1", "Alive"),ratConstraint);
+		ratsPanel = new RatsPanel();
+		
 		monitor.add(general, BorderLayout.WEST);
 		monitor.add(ratsPanel, BorderLayout.CENTER);
 		
 		getContentPane().add(controls, BorderLayout.NORTH);
 		getContentPane().add(monitor, BorderLayout.CENTER);
 		
+//		startRefreshing();
 		//initialize threads
 		grocery = new Grocery(5, 0, 0, 0, this);
+
 		addRat();
 		addCustomer();
 		addBakery();
 		
 	}
 	
-	private void addRatOnGUI() {
-		
-	}
 	
+//	private void startRefreshing() {
+//		Timer time = new Timer(); // Instantiate Timer Object
+//		time.schedule(new TimerTask() {
+//			@Override
+//			public void run() {
+//				SwingUtilities.invokeLater(new Thread( () -> {
+//					refreshGUI();
+//				})); 
+//			}
+//		}, 0, 50);
+//		
+//	}
+
 	private void addRat() {
-		Rat rat = new Rat(grocery);
+		numberOfRats++;
+		Rat rat = new Rat(grocery, ratsPanel.addRat("Rat "+ ratsPanel.getNumberOfRats()));
 		new Thread(rat).start();
 		rats.push(rat);
 	}
 	
 	private void removeRat() {
+		numberOfRats--;
 		if(rats.isEmpty()) {
 			return;
 		}
 		Rat rat = rats.pop();
+		ratsPanel.removeRat(rat.getStatus());
 		rat.stopMe();
 	}
 	
 	private void addCustomer() {
+		numberOfConsumers++;
 		Customer customer = new Customer(grocery);
 		new Thread(customer).start();
 		customers.push(customer);
 	}
 
 	private void removeCustomer() {
+		numberOfConsumers--;
 		if(customers.isEmpty()) {
 			return;
 		}
@@ -148,12 +171,14 @@ public class GroceryGUI extends JFrame {
 	}
 	
 	private void addBakery() {
+		numberOfBakeries++;
 		Bakery bakery = new Bakery(grocery);
 		new Thread(bakery).start();
 		bakeries.push(bakery);
 	}
 	
 	private void removeBakery() {
+		numberOfBakeries--;
 		if(bakeries.isEmpty()) {
 			return;
 		}
@@ -166,6 +191,9 @@ public class GroceryGUI extends JFrame {
 		breadsDelivered.setValue(grocery.getBreadsDelivered()+"");
 		breadsBought.setValue(grocery.getBreadsBought()+"");
 		breadsConsumed.setValue(grocery.getBreadsConsumed()+"");
+		ratControl.setControlValue(numberOfRats);
+		bakeryControl.setControlValue(numberOfBakeries);
+		customerControl.setControlValue(numberOfConsumers);
 	}
 
 	
