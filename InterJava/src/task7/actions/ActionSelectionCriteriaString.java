@@ -32,6 +32,7 @@ public class ActionSelectionCriteriaString  extends AbstractAction {
 				gui.getRightListModel().addElement(name);
 			}
 		}
+		gui.stateChanged();
 	}
 
 }

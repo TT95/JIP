@@ -2,6 +2,7 @@ package task7;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -57,7 +58,6 @@ public class PopularNameGUI extends JFrame {
 	private JPanel contentPane;
 	
 	
-	private StudentFile studentFile;
 	private DefaultListModel<String> rightListModel;
 	private DefaultListModel<String> leftListModel;
 	private String matchStringTyped="";
@@ -66,8 +66,16 @@ public class PopularNameGUI extends JFrame {
 	private JList<String> leftList;
 
 	
-	private JLabel linesCount;
-	private static final String linesText = "Selected lines: ";
+	private JLabel nameOfSelectedFile;
+	private JLabel numberOfNames;
+	private JLabel numberOfSelectedNames;
+	
+	private String selectedFileName;
+	
+	private static final String selectedFileText = "Selected File: ";
+	private static final String numberOfNamesText = "Total names: ";
+	private static final String numberOfSelectedNamesText = "Names selected: ";
+
 	
 	private static final String defaultStudentFile = "res/Students.txt";
 	private static final String defaultpopularNamesFile = "res/PopularNames.txt";
@@ -85,6 +93,7 @@ public class PopularNameGUI extends JFrame {
 					PopularNameGUI frame = new PopularNameGUI();
 					frame.pack();
 					frame.setVisible(true);
+					frame.setSize(800, 500);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -116,7 +125,7 @@ public class PopularNameGUI extends JFrame {
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					try {	
 						File file = fc.getSelectedFile();
-						studentFile = new StudentFile(file.getPath().toString());
+						loadpopularNameFile(file.getPath());
 					} catch (Exception ex) {
 						JOptionPane.showMessageDialog(null, "Problem reading properties file!");
 					}
@@ -168,7 +177,9 @@ public class PopularNameGUI extends JFrame {
 			return name.contains(matchString);
 		}));
 		similar.addActionListener(new ActionSelectionCriteriaString(this, (name,matchString) -> {
-			return name.contains(matchString);
+			Integer distance = LevenshteinDistance.computeLevenshteinDistance(matchString, name);
+			Integer maxDistance = 3;
+			return distance<=maxDistance?true:false;
 		}));
 		group.add(starting);
 		group.add(containing);
@@ -219,16 +230,24 @@ public class PopularNameGUI extends JFrame {
 		toolBar.add(similar);
 		toolBar.add(field);
 		
-		contentPane.add(rightPanel, BorderLayout.EAST);
+		contentPane.add(rightPanel, BorderLayout.CENTER);
 		contentPane.add(leftPanel, BorderLayout.WEST);
 		contentPane.add(toolBar, BorderLayout.NORTH);
 		
 
-		JPanel bottomPanel = new JPanel();
-		bottomPanel.setLayout(new GridBagLayout());
-		linesCount = new JLabel(linesText);
-		bottomPanel.add(linesCount);
-		getContentPane().add(bottomPanel,BorderLayout.SOUTH);
+		JPanel statusBar = new JPanel();
+		statusBar.setLayout(new GridBagLayout());
+		nameOfSelectedFile = new JLabel(selectedFileText);
+		numberOfNames = new JLabel(numberOfNamesText);
+		numberOfSelectedNames = new JLabel(numberOfSelectedNamesText);
+		GridBagConstraints c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.CENTER;
+		c.fill=GridBagConstraints.HORIZONTAL;
+		c.weightx = 1.0;
+		statusBar.add(nameOfSelectedFile, c);
+		statusBar.add(numberOfNames, c);
+		statusBar.add(numberOfSelectedNames, c);
+		getContentPane().add(statusBar,BorderLayout.SOUTH);
 		
 		
 		
@@ -243,28 +262,26 @@ public class PopularNameGUI extends JFrame {
 		
 	}
 	
-	private void newFilter(List<LineAnalyzed> list) {
-		rightList.clearSelection();
-		List<Integer> indexesToSelect = new ArrayList<>();
-		for(int index=0; index<rightListModel.getSize(); index++) {
-			if(list.contains(rightListModel.getElementAt(index))) {
-				indexesToSelect.add(index);
-			}
-		}
-		rightList.setSelectedIndices(indexesToSelect.stream().mapToInt(i -> i).toArray());
-		showNumberOfSelectedLines();
+	public void stateChanged() {
+		numberOfSelectedNames.setText(numberOfSelectedNamesText + rightListModel.size());
+		numberOfNames.setText(numberOfNamesText + leftListModel.size());
+		nameOfSelectedFile.setText(selectedFileText + selectedFileName);
+		
 	}
 	
+
 	private void loadpopularNameFile(String path) throws IOException {
 		PopularNames.setPathToFile(path);
+		leftListModel.removeAllElements();
+		rightListModel.removeAllElements();
 		for(String name : PopularNames.getPopularNames()) {
 			leftListModel.addElement(name);
+			
 		}
+		selectedFileName = path;
+		stateChanged();
 	}
 	
-	private void showNumberOfSelectedLines() {
-		linesCount.setText(linesText + rightList.getSelectedIndices().length);
-	}
 	
 	
 	private void replaceWithNewList(List<String> list) {

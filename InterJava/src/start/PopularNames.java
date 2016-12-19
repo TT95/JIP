@@ -4,16 +4,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+
+import com.sun.org.apache.bcel.internal.generic.LALOAD;
 
 /**
  * Created by teo on 10/26/16.
  */
 public class PopularNames {
 
-    private static List<String> popularNames;
-    private static List<String> popularMaleNames;
-    private static List<String> popularFemaleNames;
+    private static List<String> popularNames = new LinkedList<>();
+    private static List<String> popularMaleNames = new LinkedList<>();
+    private static List<String> popularFemaleNames = new LinkedList<>();
 
     private static final String fileSeperator = "#### Girls'";
     private static final String defFilePath = "res/PopularNames.txt";
@@ -30,16 +33,23 @@ public class PopularNames {
             e.printStackTrace();
         }
         int index = names.indexOf(fileSeperator);
-        popularMaleNames = names.subList(1,index); //skipping first line
-        popularFemaleNames = names.subList(index + 1, names.size());
+        popularMaleNames = new LinkedList<>(names.subList(1,index)); //skipping first line
+        popularFemaleNames = new LinkedList<>(names.subList(index + 1, names.size()));
         popularNames = new ArrayList<>();
         popularNames.addAll(popularMaleNames);
         popularNames.addAll(popularFemaleNames);
     }
+    
 
     
     public static void setPathToFile(String path) {
+    	
     	givenPath = path;
+    	popularMaleNames.clear();
+    	popularFemaleNames.clear();
+    	popularNames.clear();
+    	loadNames();
+    	
     }
 
     public static List<String> getPopularMaleNames() {
