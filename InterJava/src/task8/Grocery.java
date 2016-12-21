@@ -2,12 +2,11 @@ package task8;
 
 import javax.swing.SwingUtilities;
 
+import task8.workers.Bakery;
+
 public class Grocery {
 	
 	private static final int MAX_BREAD_IN_STORE = 100;
-	private static final int CUSTOMER_MAX_BUY_AMOUNT = 3;
-	private static final int RAT_EATING_FREQ_SECS = 10;
-	private static final int RAT_STARVING_TIME_SECS = 120;
 	
 	private int breadsInStore;
 	private int breadsConsumed;
@@ -27,33 +26,29 @@ public class Grocery {
 	
 	public synchronized void doJob(GroceryWorker groceryWorker) {
 		while(breadsInStore>=MAX_BREAD_IN_STORE ||
-				(groceryWorker!= GroceryWorker.BAKERY && breadsInStore == 0)) {
+				(!(groceryWorker instanceof Bakery) && breadsInStore == 0)) {
 			try {
 				wait();
 			} catch (InterruptedException ignorable) {}
 		}
-		switch (groceryWorker) {
-		case RAT:
-			breadsInStore--;
-			breadsConsumed++;
-			break;
-		case CUSTOMER:
-			breadsInStore--;
-			breadsBought++;
-			break;
-		case BAKERY:
-			breadsInStore+= 1;
-			breadsDelivered++;
-			break;
-		}
+		
+		groceryWorker.consume(this);
 		refreshGUI();
 		notify();
 	}
 	
 	private void refreshGUI() {
-		SwingUtilities.invokeLater(new Thread( () -> {
-			frame.refreshGUI();
-		})); 
+		try { 
+			SwingUtilities.invokeAndWait(new Thread( () -> {
+				frame.refreshGUI();
+			}));
+			
+		} catch (Exception e ) {
+			
+		}
+//		SwingUtilities.invokeLater(new Thread( () -> {
+//			frame.refreshGUI();
+//		})); 
 	}
 
 	public int getBreadsInStore() {
@@ -71,6 +66,23 @@ public class Grocery {
 	public int getBreadsDelivered() {
 		return breadsDelivered;
 	}
+
+	public void setBreadsInStore(int breadsInStore) {
+		this.breadsInStore = breadsInStore;
+	}
+
+	public void setBreadsConsumed(int breadsConsumed) {
+		this.breadsConsumed = breadsConsumed;
+	}
+
+	public void setBreadsBought(int breadsBought) {
+		this.breadsBought = breadsBought;
+	}
+
+	public void setBreadsDelivered(int breadsDelivered) {
+		this.breadsDelivered = breadsDelivered;
+	}
+	
 	
 
 }

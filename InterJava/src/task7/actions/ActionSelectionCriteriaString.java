@@ -1,7 +1,6 @@
 package task7.actions;
 
 import java.awt.event.ActionEvent;
-import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.ListModel;
@@ -12,6 +11,10 @@ import task7.strategy.StringCriteria;
 
 public class ActionSelectionCriteriaString  extends AbstractAction {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private PopularNameGUI gui;
 	private StringCriteria criteria;
 	private String matchString;

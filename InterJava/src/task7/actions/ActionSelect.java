@@ -9,6 +9,10 @@ import task7.PopularNameGUI;
 
 public class ActionSelect extends AbstractAction {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private PopularNameGUI gui;
 	
 	public ActionSelect(PopularNameGUI gui) {

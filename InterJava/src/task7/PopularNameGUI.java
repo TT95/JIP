@@ -6,18 +6,13 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-import javafx.scene.control.ComboBox;
-import javafx.scene.layout.Border;
+
+
 
 import javax.swing.AbstractButton;
 import javax.swing.BoxLayout;
@@ -36,18 +31,17 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.JToolBar;
 
-import start.LineAnalyzed;
+
+
+
 import start.PopularNames;
-import start.StudentFile;
 import task7.actions.ActionSelect;
 import task7.actions.ActionSelectionCriteriaString;
 
@@ -77,7 +71,6 @@ public class PopularNameGUI extends JFrame {
 	private static final String numberOfSelectedNamesText = "Names selected: ";
 
 	
-	private static final String defaultStudentFile = "res/Students.txt";
 	private static final String defaultpopularNamesFile = "res/PopularNames.txt";
 
 
@@ -104,6 +97,7 @@ public class PopularNameGUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
+	@SuppressWarnings("unchecked")
 	public PopularNameGUI() {
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -127,7 +121,7 @@ public class PopularNameGUI extends JFrame {
 						File file = fc.getSelectedFile();
 						loadpopularNameFile(file.getPath());
 					} catch (Exception ex) {
-						JOptionPane.showMessageDialog(null, "Problem reading properties file!");
+						JOptionPane.showMessageDialog(null, "Problem reading names file!");
 					}
 				}
 			}
@@ -200,9 +194,10 @@ public class PopularNameGUI extends JFrame {
 		
 		
 		String[] options = { "All", "Male", "Female" };
-		JComboBox genderCombo = new JComboBox(options);
+		@SuppressWarnings("rawtypes")
+		JComboBox genderCombo = new JComboBox<>(options);
 		genderCombo.addActionListener(e -> {
-			JComboBox cb = (JComboBox)e.getSource();
+			JComboBox<String> cb = (JComboBox<String>)e.getSource();
 	        String option = (String)cb.getSelectedItem();
 	        group.clearSelection();
 	        switch (option) {

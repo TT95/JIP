@@ -1,13 +1,18 @@
-package task8;
+package task8.workers;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.SwingUtilities;
 
+import task8.Grocery;
+import task8.GroceryWorker;
 import task8.components.Status;
 
-public class Rat implements Runnable{
+public class Rat implements Runnable, GroceryWorker{
+	
+	private static final int frequency = 1000;
+	private static final int consumingAmount = 1;
 
 	Grocery grocery;
 	
@@ -54,13 +59,19 @@ public class Rat implements Runnable{
 	public void run() {
 		thisThread = Thread.currentThread();
 		while(running) {
-			grocery.doJob(GroceryWorker.RAT);
-			try { Thread.sleep(1000); } catch (InterruptedException ignorable) {}
+			grocery.doJob(this);
+			try { Thread.sleep(frequency); } catch (InterruptedException ignorable) {}
 		}
 	}
 
 	public Status getStatus() {
 		return status;
+	}
+
+	@Override
+	public void consume(Grocery grocery) {
+		grocery.setBreadsInStore(grocery.getBreadsInStore()-consumingAmount);
+		grocery.setBreadsConsumed(grocery.getBreadsConsumed()+consumingAmount);
 	}
 	
 	

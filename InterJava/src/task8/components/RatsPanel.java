@@ -5,7 +5,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -14,6 +13,11 @@ import task8.RatStatus;
 
 public class RatsPanel extends JPanel {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private List<Status> statuses;
 	
 	private GridBagConstraints c;

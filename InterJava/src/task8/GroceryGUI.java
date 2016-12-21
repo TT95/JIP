@@ -5,20 +5,17 @@ import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Stack;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import task8.components.Control;
 import task8.components.RatsPanel;
 import task8.components.Status;
+import task8.workers.Bakery;
+import task8.workers.Customer;
+import task8.workers.Rat;
 
 public class GroceryGUI extends JFrame {
 	

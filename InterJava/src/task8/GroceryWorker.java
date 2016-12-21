@@ -1,6 +1,6 @@
 package task8;
 
-public enum GroceryWorker {
+public interface GroceryWorker {
 
-	RAT,CUSTOMER,BAKERY
+	public void consume(Grocery grocery);
 }
