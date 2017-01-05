@@ -25,6 +25,7 @@ public class Grocery {
 	}
 	
 	public synchronized void doJob(GroceryWorker groceryWorker) {
+		refreshGUI();
 		while(breadsInStore>=MAX_BREAD_IN_STORE ||
 				(!(groceryWorker instanceof Bakery) && breadsInStore == 0)) {
 			try {
@@ -33,7 +34,6 @@ public class Grocery {
 		}
 		
 		groceryWorker.consume(this);
-		refreshGUI();
 		notify();
 	}
 	
@@ -83,6 +83,9 @@ public class Grocery {
 		this.breadsDelivered = breadsDelivered;
 	}
 	
-	
+	public void addBreadManually(int breadAmount) {
+		this.breadsInStore = breadAmount;
+		frame.refreshGUI();
+	}
 
 }

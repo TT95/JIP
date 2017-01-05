@@ -9,24 +9,32 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeListener;
 
 public class Control extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
+	private static final String periodString = "Period[ms]:";
 	private JButton add;
 	private JButton sub;
 	private JLabel label;
 	private Integer valueInt;
 	private JLabel value;
+	private JSpinner spinner;
 	
 	
-	public Control(ActionListener addAction, ActionListener subAction, String title) {
+	public Control(ActionListener addAction, ActionListener subAction, ChangeListener freqAction, int freqValue, String title) {
 		
 		super();
 		add = new JButton("Add");
 		sub = new JButton("Sub");
+		spinner = new JSpinner(new SpinnerNumberModel(freqValue, 0, 10000000, 100));
 		add.addActionListener(addAction);
 		sub.addActionListener(subAction);
+		spinner.addChangeListener(freqAction);
 		this.label = new JLabel(title+":");
 		this.valueInt = 0;
 		this.value = new JLabel(valueInt + "");
@@ -50,6 +58,15 @@ public class Control extends JPanel {
 		c.gridx = 2;
 		c.gridy = 1;
 		add(sub,c);
+		
+		c.gridx = 0;
+		c.gridy = 3;
+		add(new JLabel(periodString),c);
+		
+		c.gridx = 1;
+		c.gridy = 3;
+		add(spinner,c);
+		
 		
 	}
 	

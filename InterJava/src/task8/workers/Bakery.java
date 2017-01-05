@@ -6,7 +6,7 @@ import task8.GroceryWorker;
 
 public class Bakery implements Runnable, GroceryWorker {
 	
-	private static final int frequency = 1000;
+	private static int frequency = 1000;
 	private static final int producingAmount = 1;
 
 	
@@ -36,5 +36,12 @@ public class Bakery implements Runnable, GroceryWorker {
 		grocery.setBreadsInStore(grocery.getBreadsInStore()+producingAmount);
 		grocery.setBreadsDelivered(grocery.getBreadsDelivered()+producingAmount);
 	}
+
+	public static void setFrequency(int frequency) {
+		Bakery.frequency = frequency;
+	}
+	
+	
+	
 	
 }

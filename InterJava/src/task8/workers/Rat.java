@@ -11,7 +11,7 @@ import task8.components.Status;
 
 public class Rat implements Runnable, GroceryWorker{
 	
-	private static final int frequency = 1000;
+	private static  int frequency = 1000;
 	private static final int consumingAmount = 1;
 
 	Grocery grocery;
@@ -72,6 +72,10 @@ public class Rat implements Runnable, GroceryWorker{
 	public void consume(Grocery grocery) {
 		grocery.setBreadsInStore(grocery.getBreadsInStore()-consumingAmount);
 		grocery.setBreadsConsumed(grocery.getBreadsConsumed()+consumingAmount);
+	}
+	
+	public static void setFrequency(int frequency) {
+		Rat.frequency = frequency;
 	}
 	
 	

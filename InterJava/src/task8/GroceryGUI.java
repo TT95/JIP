@@ -5,11 +5,16 @@ import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Stack;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 
+import javafx.beans.value.ChangeListener;
+import task8.components.AddBread;
 import task8.components.Control;
 import task8.components.RatsPanel;
 import task8.components.Status;
@@ -50,7 +55,7 @@ public class GroceryGUI extends JFrame {
 					GroceryGUI frame = new GroceryGUI();
 					frame.pack();
 					frame.setVisible(true);
-					frame.setSize(800, 500);
+					frame.setSize(1000, 600);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -72,16 +77,28 @@ public class GroceryGUI extends JFrame {
 		c.fill=GridBagConstraints.HORIZONTAL;
 		c.weightx = 1.0;
 		c.weighty = 1.0;
-		ratControl = new Control( e -> {addRat();}, e -> {removeRat();}, "Rats");
-		customerControl = new Control(e -> {addCustomer();}, e -> {removeCustomer();}, "Customer");
-		bakeryControl = new Control(e -> {addBakery();}, e -> {removeBakery();}, "Bakeries");
+		ratControl = new Control( e -> {addRat();}, e -> {removeRat();},e -> {
+			JSpinner s = (JSpinner)e.getSource();
+			Rat.setFrequency((Integer)s.getValue());
+		},1000, "Rats");
+		customerControl = new Control(e -> {addCustomer();}, e -> {removeCustomer();},e -> {
+			JSpinner s = (JSpinner)e.getSource();
+			Customer.setFrequency((Integer)s.getValue());
+		},1000, "Customer");
+		bakeryControl = new Control(e -> {addBakery();}, e -> {removeBakery();},e -> {
+			JSpinner s = (JSpinner)e.getSource();
+			Bakery.setFrequency((Integer)s.getValue());
+		},1000, "Bakeries");
 		controls.add(customerControl,c);
 		controls.add(bakeryControl,c);
 		controls.add(ratControl,c);
+
+		
 		
 		JPanel monitor = new JPanel(new BorderLayout());
 		JPanel general = new JPanel(new GridBagLayout());
 		
+		//statuses
 		GridBagConstraints generalConstraint = new GridBagConstraints();
 		generalConstraint.insets = new Insets(5, 5, 5, 5);
 		generalConstraint.weightx = 1.0;
@@ -102,22 +119,22 @@ public class GroceryGUI extends JFrame {
 		generalConstraint.gridx = 0;
 		general.add(breadsConsumed,generalConstraint);
 		
+		//rats panel
 		ratsPanel = new RatsPanel();
-		
 		monitor.add(general, BorderLayout.WEST);
 		monitor.add(ratsPanel, BorderLayout.CENTER);
 		
-		getContentPane().add(controls, BorderLayout.NORTH);
-		getContentPane().add(monitor, BorderLayout.CENTER);
 		
 //		startRefreshing();
 		//initialize threads
-		grocery = new Grocery(5, 0, 0, 0, this);
+		grocery = new Grocery(0, 0, 0, 0, this);
 
-		addRat();
 		addCustomer();
-		addBakery();
+		addRat();
 		
+		getContentPane().add(controls, BorderLayout.NORTH);
+		getContentPane().add(monitor, BorderLayout.CENTER);
+		getContentPane().add(new AddBread(grocery, 1), BorderLayout.SOUTH);
 	}
 	
 	
