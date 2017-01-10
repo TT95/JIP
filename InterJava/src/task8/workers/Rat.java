@@ -3,6 +3,7 @@ package task8.workers;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.sound.midi.Soundbank;
 import javax.swing.SwingUtilities;
 
 import task8.Grocery;
@@ -52,7 +53,7 @@ public class Rat implements Runnable, GroceryWorker{
 					status.setValue(text);
 				})); 
 			}
-		}, 0, 50);
+		}, 0, 10);
 	}
 	
 	@Override

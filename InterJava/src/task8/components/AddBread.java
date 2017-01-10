@@ -19,7 +19,7 @@ import task8.Grocery;
 public class AddBread extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
-	private static final String text = "Add bread";
+	private static final String text = "Add bread manually";
 	private JButton add;
 	private JLabel label;
 	private JSpinner spinner;

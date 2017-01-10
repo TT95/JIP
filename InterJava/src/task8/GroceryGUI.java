@@ -55,7 +55,7 @@ public class GroceryGUI extends JFrame {
 					GroceryGUI frame = new GroceryGUI();
 					frame.pack();
 					frame.setVisible(true);
-					frame.setSize(1000, 600);
+					frame.setSize(1100, 600);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -80,15 +80,15 @@ public class GroceryGUI extends JFrame {
 		ratControl = new Control( e -> {addRat();}, e -> {removeRat();},e -> {
 			JSpinner s = (JSpinner)e.getSource();
 			Rat.setFrequency((Integer)s.getValue());
-		},1000, "Rats");
+		},2000, "Rats");
 		customerControl = new Control(e -> {addCustomer();}, e -> {removeCustomer();},e -> {
 			JSpinner s = (JSpinner)e.getSource();
 			Customer.setFrequency((Integer)s.getValue());
-		},1000, "Customer");
+		},2000, "Customer");
 		bakeryControl = new Control(e -> {addBakery();}, e -> {removeBakery();},e -> {
 			JSpinner s = (JSpinner)e.getSource();
 			Bakery.setFrequency((Integer)s.getValue());
-		},1000, "Bakeries");
+		},2000, "Bakeries");
 		controls.add(customerControl,c);
 		controls.add(bakeryControl,c);
 		controls.add(ratControl,c);
@@ -134,7 +134,7 @@ public class GroceryGUI extends JFrame {
 		
 		getContentPane().add(controls, BorderLayout.NORTH);
 		getContentPane().add(monitor, BorderLayout.CENTER);
-		getContentPane().add(new AddBread(grocery, 1), BorderLayout.SOUTH);
+		getContentPane().add(new AddBread(grocery, 5), BorderLayout.SOUTH);
 	}
 	
 	
@@ -153,6 +153,7 @@ public class GroceryGUI extends JFrame {
 
 	private void addRat() {
 		numberOfRats++;
+		ratControl.setControlValue(numberOfRats);
 		Rat rat = new Rat(grocery, ratsPanel.addRat("Rat "+ ratsPanel.getNumberOfRats()));
 		new Thread(rat).start();
 		rats.push(rat);
@@ -160,6 +161,7 @@ public class GroceryGUI extends JFrame {
 	
 	private void removeRat() {
 		numberOfRats--;
+		ratControl.setControlValue(numberOfRats);
 		if(rats.isEmpty()) {
 			return;
 		}
@@ -170,6 +172,7 @@ public class GroceryGUI extends JFrame {
 	
 	private void addCustomer() {
 		numberOfConsumers++;
+		customerControl.setControlValue(numberOfConsumers);
 		Customer customer = new Customer(grocery);
 		new Thread(customer).start();
 		customers.push(customer);
@@ -177,6 +180,7 @@ public class GroceryGUI extends JFrame {
 
 	private void removeCustomer() {
 		numberOfConsumers--;
+		customerControl.setControlValue(numberOfConsumers);
 		if(customers.isEmpty()) {
 			return;
 		}
@@ -186,6 +190,7 @@ public class GroceryGUI extends JFrame {
 	
 	private void addBakery() {
 		numberOfBakeries++;
+		bakeryControl.setControlValue(numberOfBakeries);
 		Bakery bakery = new Bakery(grocery);
 		new Thread(bakery).start();
 		bakeries.push(bakery);
@@ -193,6 +198,7 @@ public class GroceryGUI extends JFrame {
 	
 	private void removeBakery() {
 		numberOfBakeries--;
+		bakeryControl.setControlValue(numberOfBakeries);
 		if(bakeries.isEmpty()) {
 			return;
 		}
@@ -200,15 +206,21 @@ public class GroceryGUI extends JFrame {
 		bakery.stopMe();
 	}
 	
-	public void refreshGUI() {
-		breadsInStore.setValue(grocery.getBreadsInStore()+"");
-		breadsDelivered.setValue(grocery.getBreadsDelivered()+"");
-		breadsBought.setValue(grocery.getBreadsBought()+"");
-		breadsConsumed.setValue(grocery.getBreadsConsumed()+"");
-		ratControl.setControlValue(numberOfRats);
-		bakeryControl.setControlValue(numberOfBakeries);
-		customerControl.setControlValue(numberOfConsumers);
+	public void setBreadInStoreNumber (Integer number) {
+		breadsInStore.setValue(number+"");
 	}
 
+	public void setBreadDeliveredNumber (Integer number) {
+		breadsDelivered.setValue(number+"");
+	}
+	
+	public void setBreadBoughtNumber (Integer number) {
+		breadsBought.setValue(number+"");
+	}
+	
+	public void setBreadConsumedNumber (Integer number) {
+		breadsConsumed.setValue(number+"");
+	}
+	
 	
 }

@@ -3,6 +3,7 @@ package task8.components;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
@@ -17,7 +18,7 @@ import javax.swing.event.ChangeListener;
 public class Control extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
-	private static final String periodString = "Period[ms]:";
+	private static final String periodString = "Sleep period[ms]:";
 	private JButton add;
 	private JButton sub;
 	private JLabel label;
@@ -34,6 +35,8 @@ public class Control extends JPanel {
 		spinner = new JSpinner(new SpinnerNumberModel(freqValue, 0, 10000000, 100));
 		add.addActionListener(addAction);
 		sub.addActionListener(subAction);
+//		add.addActionListener(repaintActionListener(this));
+//		sub.addActionListener(repaintActionListener(this));
 		spinner.addChangeListener(freqAction);
 		this.label = new JLabel(title+":");
 		this.valueInt = 0;
@@ -69,6 +72,15 @@ public class Control extends JPanel {
 		
 		
 	}
+	
+//	private ActionListener repaintActionListener(JPanel panel) {
+//		return new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				panel.repaint();
+//			}
+//		};
+//	}
 	
 	public void setControlValue(int controlValue) {
 		value.setText(controlValue + "");
