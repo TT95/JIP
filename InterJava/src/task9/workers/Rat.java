@@ -39,6 +39,7 @@ public class Rat implements Runnable, GroceryWorker{
 		
 		while(true) {
 			look_up.rat();
+			System.out.println("eaten some bread!");
 			try {
 				Thread.sleep(2000);
 			} catch (InterruptedException e) {
@@ -48,7 +49,6 @@ public class Rat implements Runnable, GroceryWorker{
 		}
 
 	}
-	
 	
 	public Rat(Grocery grocery, Status status) {
 		super();

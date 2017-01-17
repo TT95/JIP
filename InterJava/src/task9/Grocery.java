@@ -43,12 +43,13 @@ public class Grocery extends UnicastRemoteObject implements IGrocery {
 	
 	public synchronized void rat() {
 		while(breadsInStore==0) {
-			try { wait(); } catch (InterruptedException ignorable) {}
+			try {  wait(); } catch (InterruptedException ignorable) {}
 		}
 		breadsInStore--;
 		breadsConsumed--;
 		refreshGUI();
-		System.out.println("eaten!!");
+		System.out.println("Rat eats!!");
+		notify();
 	}
 	
 	public synchronized void customer() {
@@ -63,13 +64,18 @@ public class Grocery extends UnicastRemoteObject implements IGrocery {
 		breadsInStore -= toConsume;
 		breadsBought += toConsume;
 		refreshGUI();
+		System.out.println("Customer buys!");
+		notify();
 	}
 	
-	public synchronized void bakery() {
+	public synchronized void bakery(int amount) {
 		while(breadsInStore>=MAX_BREAD_IN_STORE) {
 			try { wait(); } catch (InterruptedException ignorable) {}
 		}
-		//blabla
+		breadsInStore+=amount;
+		refreshGUI();
+		System.out.println(amount + " bread added!");
+		notify();
 	}
 	
 	private void refreshGUI() {

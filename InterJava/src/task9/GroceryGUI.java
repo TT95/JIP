@@ -127,12 +127,12 @@ public class GroceryGUI extends JFrame {
 //		startRefreshing();
 		//initialize threads
 		try {
-			grocery = new Grocery(10, 0, 0, 0, this);
+			grocery = new Grocery(0, 0, 0, 0, this);
 		} catch (RemoteException e2) {
 			e2.printStackTrace();
 		}
 
-		getContentPane().add(controls, BorderLayout.NORTH);
+//		getContentPane().add(controls, BorderLayout.NORTH);
 		getContentPane().add(monitor, BorderLayout.CENTER);
 		getContentPane().add(new AddBread(grocery, 5), BorderLayout.SOUTH);
 		

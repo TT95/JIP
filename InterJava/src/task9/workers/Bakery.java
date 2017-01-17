@@ -1,7 +1,14 @@
 package task9.workers;
 
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.util.Scanner;
+
 import task9.Grocery;
 import task9.GroceryWorker;
+import task9.IGrocery;
 
 
 public class Bakery implements Runnable, GroceryWorker {
@@ -12,6 +19,27 @@ public class Bakery implements Runnable, GroceryWorker {
 	
 	Grocery grocery;
 	
+	
+	private static IGrocery look_up;
+
+	public static void main(String[] args)
+		throws MalformedURLException, RemoteException, NotBoundException {
+
+		look_up = (IGrocery) Naming.lookup("//localhost/MyServer");
+		Scanner scanner = new Scanner(System.in);
+		while(true) {
+			String input = scanner.nextLine();
+			if(input=="exit") {
+				break;
+			}
+			Integer amount;
+			amount = Integer.parseInt(input);
+			look_up.bakery(amount);
+			System.out.println("Added " + amount + " bread!");
+		}
+		scanner.close();
+	}
+
 	boolean running = true;
 	
 	public void stopMe() {

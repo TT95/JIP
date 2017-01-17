@@ -7,5 +7,5 @@ public interface IGrocery extends Remote{
 	
 	public void rat() throws RemoteException;
 	public void customer() throws RemoteException;
-	public void bakery() throws RemoteException;
+	public void bakery(int amount) throws RemoteException;
 }
