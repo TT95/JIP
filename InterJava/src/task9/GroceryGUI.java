@@ -54,7 +54,7 @@ public class GroceryGUI extends JFrame {
 					GroceryGUI frame = new GroceryGUI();
 					frame.pack();
 					frame.setVisible(true);
-					frame.setSize(1100, 600);
+					frame.setSize(600, 600);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -134,52 +134,11 @@ public class GroceryGUI extends JFrame {
 
 //		getContentPane().add(controls, BorderLayout.NORTH);
 		getContentPane().add(monitor, BorderLayout.CENTER);
-		getContentPane().add(new AddBread(grocery, 5), BorderLayout.SOUTH);
+//		getContentPane().add(new AddBread(grocery, 5), BorderLayout.SOUTH);
 		
 		
 		
 		//i sockets
-
-		
-//		System.setSecurityManager(new RMISecurityManager());
-//		
-//		int port = 1091;
-//
-//        try { // special exception handler for registry creation
-//            LocateRegistry.createRegistry(port);
-//            System.out.println("java RMI registry created.");
-//        } catch (RemoteException e) {
-//            // do nothing, error means registry already exists
-//            System.out.println("java RMI registry already exists.");
-//        }
-		
-		
-
-//        String hostname = "0.0.0.0";
-//
-//        String bindLocation = "//" + hostname + ":" + port + "/grocery";
-//        try {
-//            Naming.bind(bindLocation, grocery);
-//            System.out.println("Addition Server is ready at:" + bindLocation);
-//        } catch (RemoteException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        } catch (MalformedURLException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        } catch (Exception e) {
-//            System.out.println("Addition Serverfailed: " + e);
-//        }
-		
-		
-//		try {
-//			Context namingContext = new InitialContext();
-//			namingContext.bind("rmi:grocery", grocery); 
-//		} catch (NamingException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		} 
-		
 		
 		try {
 
@@ -194,20 +153,6 @@ public class GroceryGUI extends JFrame {
         }
 
 	}
-	
-	
-//	private void startRefreshing() {
-//		Timer time = new Timer(); // Instantiate Timer Object
-//		time.schedule(new TimerTask() {
-//			@Override
-//			public void run() {
-//				SwingUtilities.invokeLater(new Thread( () -> {
-//					refreshGUI();
-//				})); 
-//			}
-//		}, 0, 50);
-//		
-//	}
 
 	private void addRat() {
 		numberOfRats++;

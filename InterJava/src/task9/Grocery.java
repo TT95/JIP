@@ -10,7 +10,6 @@ public class Grocery extends UnicastRemoteObject implements IGrocery {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private static final int CONSUMER_BUY_AMOUNT = 3;
 	private static final int MAX_BREAD_IN_STORE = 100;
 	
 	private static final int EXECUTING_DELAY = 0;
@@ -46,26 +45,27 @@ public class Grocery extends UnicastRemoteObject implements IGrocery {
 			try {  wait(); } catch (InterruptedException ignorable) {}
 		}
 		breadsInStore--;
-		breadsConsumed--;
+		breadsConsumed++;
 		refreshGUI();
 		System.out.println("Rat eats!!");
 		notify();
 	}
 	
-	public synchronized void customer() {
+	public synchronized int customer(int amount) {
 		while(breadsInStore==0) {
 			try { wait(); } catch (InterruptedException ignorable) {}
 		}
 		int cannotBuyAmount = 0; //measures in minus
-		if(breadsInStore - CONSUMER_BUY_AMOUNT < 0) {
-			cannotBuyAmount = breadsInStore - CONSUMER_BUY_AMOUNT;
+		if(breadsInStore - amount < 0) {
+			cannotBuyAmount = breadsInStore - amount;
 		}
-		int toConsume = CONSUMER_BUY_AMOUNT + cannotBuyAmount;
+		int toConsume = amount + cannotBuyAmount;
 		breadsInStore -= toConsume;
 		breadsBought += toConsume;
 		refreshGUI();
-		System.out.println("Customer buys!");
+		System.out.println("Customer buys " + amount + " breads!");
 		notify();
+		return toConsume;
 	}
 	
 	public synchronized void bakery(int amount) {
@@ -73,6 +73,7 @@ public class Grocery extends UnicastRemoteObject implements IGrocery {
 			try { wait(); } catch (InterruptedException ignorable) {}
 		}
 		breadsInStore+=amount;
+		breadsDelivered+=amount;
 		refreshGUI();
 		System.out.println(amount + " bread added!");
 		notify();
@@ -82,7 +83,7 @@ public class Grocery extends UnicastRemoteObject implements IGrocery {
 		frame.setBreadInStoreNumber(breadsInStore);
 		frame.setBreadConsumedNumber(breadsConsumed);
 		frame.setBreadDeliveredNumber(breadsDelivered);
-		frame.setBreadInStoreNumber(breadsInStore);
+		frame.setBreadBoughtNumber(breadsBought);
 	}
 	
 	public int getBreadsInStore() {
