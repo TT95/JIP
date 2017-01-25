@@ -1,0 +1,352 @@
+Exceptions, Student File - pogledaj BAM
+GUI - napravi core sa gridbagom
+Junit BAM
+Threads - naprvavi core i pogledaj BAM
+Sockets - pogledaj bam
+
+socktes commands and code
+
+-THREAD
+
+public class CustomThread implements Runnable {
+	
+	Store store;
+	boolean adding;
+	
+	public CustomThread(Store store, boolean adding) {
+		super();
+		this.store = store;
+		this.adding = adding;
+	}
+
+	@Override
+	public void run() {
+		if(adding) {
+			store.store();
+		} else {
+			store.remove();
+		}
+		
+	}
+}
+
+
+public class MyExample {
+	
+	public static void main(String[] args) {
+		
+		Store store = new Store();
+		Thread adder = new Thread(new CustomThread(store, true));
+		Thread remover = new Thread(new CustomThread(store, false));
+		
+		remover.start();
+		try {
+			Thread.sleep(10);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		adder.start();
+		
+	}
+
+}
+
+public class Store {
+	
+	private int store = 0;
+	
+	public synchronized void store() {
+		store++;
+		notify();
+	}
+	
+	public synchronized void remove() {
+		while(store==0) {
+			try {
+				System.out.println("waiting!");
+				wait();
+			} catch (InterruptedException ignorable) {}
+		}
+		store--;
+		notify();
+		System.out.println("done!");
+	}
+
+}
+
+-JUNIT
+
+public class MyCarExTest {
+
+    static MyCarEx bmw;
+
+    @Before
+    public void setUp() throws Exception {
+        bmw = new MyCarEx("70;15;BMW");
+
+    }
+    
+    @Test (expected = IncorrectInput.class)
+    public void testConstructor1() throws IncorrectInput{
+    	new MyCarEx("70;15");
+    }
+    
+    @Test (expected = IncorrectInput.class)
+    public void testConstructor2() throws IncorrectInput{
+    	new MyCarEx("70;1a5;FORD");
+    }
+    
+    @Test (expected = IncorrectTankCapacity.class)
+    public void testConstructor3() throws IncorrectInput{
+    	new MyCarEx("10000;1a5;FORD");
+    }
+
+    @Test (expected = TankOverload.class)
+    public void testTankIt1() throws TankOverload{
+        bmw.tankIt(100);
+    }
+
+    @Test
+    public void testTankIt2() throws TankOverload{
+        bmw.tankIt(30);
+        assertEquals(bmw.getFuelLevel(), 30, 0.001);
+    }
+
+    @Test (expected = ImpossibleDrive.class)
+    public void testStartTrip1() throws ImpossibleDrive, TankOverload{
+        bmw.tankIt(10);
+        bmw.startTrip(100);
+    }
+
+    @Test
+    public void testStartTrip2() throws ImpossibleDrive, TankOverload{
+        bmw.tankIt(30);
+        bmw.startTrip(100);
+        assertEquals(bmw.getMileage(), 100, 0.001);
+    }
+
+}
+
+-EXCEPTION
+
+package start.ex;
+
+/**
+ * Created by teo on 10/26/16.
+ */
+public class IncorrectInput extends Exception {
+	
+	private static final long serialVersionUID = 1L;
+
+    private String message;
+    private String input;
+
+    public IncorrectInput(String input, String message) {
+        this.input = input;
+        this.message = message;
+    }
+
+    public IncorrectInput(String input) {
+        this.input = input;
+    }
+
+    public IncorrectInput() {
+    }
+
+    @Override
+    public String toString() {
+        String string = "";
+        if (input != null) {
+            string+= " Input error:\"" + input + "\"";
+        }
+        if (message != null) {
+            string += " message:\"" + message + "\"";
+        }
+        return string;
+    }
+}
+
+-GUI
+
+
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
+
+public class PopularNameGUI2 extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+
+	private static final String defaultpopularNamesFile = "res/PopularNames.txt";
+
+
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					PopularNameGUI2 frame = new PopularNameGUI2();
+					frame.pack();
+					frame.setVisible(true);
+					frame.setSize(800, 500);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+	
+	/**
+	 * Create the frame.
+	 */
+	public PopularNameGUI2() {
+		
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 1000, 500);
+		
+		JMenuBar menuBar = new JMenuBar();
+		setJMenuBar(menuBar);
+		JMenu mnLoad = new JMenu("Load");
+		menuBar.add(mnLoad);
+		JMenuItem item = new JMenuItem("josko");
+		mnLoad.add(item);
+		item.addActionListener(e -> {
+			JOptionPane.showMessageDialog(this,
+				    "Eggs are not supposed to be green.",
+				    "Inane warning",
+				    JOptionPane.WARNING_MESSAGE);
+		});
+		
+		getContentPane().setLayout(new BorderLayout());
+		
+		JPanel panel = new JPanel(new GridBagLayout());
+		
+				
+				
+		JLabel nameOfSelectedFile = new JLabel("woo");
+		JLabel numberOfNames = new JLabel("misko");
+		JLabel numberOfSelectedNames = new JLabel("ivica");
+		GridBagConstraints c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.CENTER;
+		c.weightx = 1.0;
+		c.weighty = 1.0;
+		panel.add(nameOfSelectedFile, c);
+		panel.add(numberOfNames, c);
+		panel.add(numberOfSelectedNames, c);
+		getContentPane().add(panel,BorderLayout.CENTER);
+	
+
+	}
+	
+	
+}
+
+-SOCKETS
+
+
+
+		try {
+
+            Naming.rebind("//localhost/MyServer", grocery);
+            System.err.println("Server ready");
+
+        } catch (Exception e) {
+
+            System.err.println("Server exception: " + e.toString());
+            e.printStackTrace();
+
+        }
+        
+        ----------------------------------------
+        
+        
+        
+        public static void main(String[] args)
+		throws MalformedURLException, RemoteException, NotBoundException {
+
+		look_up = (IGrocery) Naming.lookup("//localhost/MyServer");
+		Scanner scanner = new Scanner(System.in);
+		while(true) {
+			String input = scanner.nextLine();
+			if(input=="exit") {
+				break;
+			}
+			Integer amount;
+			amount = Integer.parseInt(input);
+			int amountBought = look_up.customer(amount);
+			System.out.println("Bought " + amountBought + " breads!");
+		}
+		scanner.close();
+	}
+
+----------------------------------------
+
+public class Grocery extends UnicastRemoteObject implements IGrocery {
+
+
+	public Grocery(int breadsInStore, int breadsConsumed, int breadsBought, int breadsDelivered, GroceryGUI frame) throws RemoteException {
+		super();
+		this.breadsInStore = breadsInStore;
+		this.breadsConsumed = breadsConsumed;
+		this.breadsBought = breadsBought;
+		this.breadsDelivered = breadsDelivered;
+		this.frame=frame;
+	}
+	
+	public synchronized void doJob(GroceryWorker groceryWorker) {
+		while(breadsInStore>=MAX_BREAD_IN_STORE ||
+				(!(groceryWorker instanceof Bakery) && breadsInStore == 0)) {
+			try { wait(); } catch (InterruptedException ignorable) {}
+		}
+		try { Thread.sleep(EXECUTING_DELAY); } catch (InterruptedException ignorable) { }
+		groceryWorker.consume(this);
+		notify();
+	}
+	
+	public synchronized void rat() {
+		while(breadsInStore==0) {
+			try {  wait(); } catch (InterruptedException ignorable) {}
+		}
+		breadsInStore--;
+		breadsConsumed++;
+		refreshGUI();
+		System.out.println("Rat eats!!");
+		notify();
+	}
+}
+	
+	-------------------------------
+	
+	public interface IGrocery extends Remote{
+	
+	public void rat() throws RemoteException;
+	public int customer(int amount) throws RemoteException;
+	public void bakery(int amount) throws RemoteException;
+}
+
+	
+	
+	--------------------------------
+	
+	javac task9/Grocery.java task9/GroceryGUI.java task9/IGrocery.java task9/workers/Rat.java task9/workers/Bakery.java task9/workers/Customer.java
+rmiregistry &
+java task9.GroceryGUI
+
+-------------------------------------
+
