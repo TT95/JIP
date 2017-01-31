@@ -51,7 +51,6 @@ public class PopularNameGUI extends JFrame {
 
 	private JPanel contentPane;
 	
-	
 	private DefaultListModel<String> rightListModel;
 	private DefaultListModel<String> leftListModel;
 	private String matchStringTyped="";
